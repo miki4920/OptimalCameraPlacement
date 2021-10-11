@@ -1,0 +1,8 @@
+N-Queens Approach - Optimal Placement of Cameras in Floorplans
+Rectangular Algorithm - The Camera Placement Problem - An art gallery problem variation
+Greedy Search - Approximate Techniques in Solving Optimal Camera Placement Problems
+Greedy Heuristic Search - Approximate Techniques in Solving Optimal Camera Placement Problems
+Random Sampler - Approximate Techniques in Solving Optimal Camera Placement Problems
+Metropolis Sampling - Approximate Techniques in Solving Optimal Camera Placement Problems
+Gibbs Sampling - Approximate Techniques in Solving Optimal Camera Placement Problems
+Simulated Annealing - Approximate Techniques in Solving Optimal Camera Placement Problems
