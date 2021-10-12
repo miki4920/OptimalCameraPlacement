@@ -1,0 +1,26 @@
+Array of user defined size (x*x)
+
+User defines walls as well as possible camera placement points
+
+Program finds all empty points and uniformly distributes checkpoints alongside them.
+
+User can choose to add more checkpoint so that the area is considered more important by the system
+
+Program executes a greedy algorithm, attempting to find camera position with the largest number of covered checkpoints
+
+Complexity = n^2 (Fill points uniformly) + (k*c) Find camera positions for all the locations
+
+Where 
+n = grid size
+k = all camera points
+c = number of cameras	
+
+Camera determines its score by calculating all the sample points:
+Point is only detected by evaluated camera: +1 
+Point is not detected: 0
+Point is detected by 1 or more different cameras: -1 for each given camera
+
+Additional metrics can be specified such as anti-vandalism measure, giving each camera a high score when considering placement. This ensures every camera is watched by at least one different camera.
+
+
+Predefined set (Using user size). Remove Wall elements.
