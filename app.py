@@ -1,11 +1,14 @@
-from flask import Flask
+from flask import Flask, render_template
+
+from environment import Environment
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+    camera_environment = Environment(1000, 1000)
+    return render_template("environment.html", camera_environment=camera_environment)
 
 
 if __name__ == '__main__':
