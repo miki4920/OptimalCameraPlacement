@@ -11,4 +11,6 @@ def generate_dimensions(x: int, y: int) -> Set[Tuple[int, int]]:
 
 class Environment:
     def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
         self.board = generate_dimensions(x, y)
