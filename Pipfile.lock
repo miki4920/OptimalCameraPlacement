@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "877edf28125f152c53322cd058b6fa0ebc2f34ea949290c2b206b6c85696a48b"
+            "sha256": "2f3fd0e3f88a59bdd8c12e60e1620d8b9292bf4077435015d5da20e1a7aa9ada"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,14 @@
         ]
     },
     "default": {
+        "bidict": {
+            "hashes": [
+                "sha256:2cce0d01eb3db9b3fa85db501c00aaa3389ee4cab7ef82178604552dfa943a1b",
+                "sha256:d50bd81fae75e34198ffc94979a0eb0939ff9adb3ef32bcc93a913d8b3e3ed1d"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==0.21.3"
+        },
         "click": {
             "hashes": [
                 "sha256:353f466495adaeb40b6b5f592f9f91cb22372351c84caeb068132442a4518ef3",
@@ -39,6 +47,14 @@
             ],
             "index": "pypi",
             "version": "==2.0.2"
+        },
+        "flask-socketio": {
+            "hashes": [
+                "sha256:07e1899e3b4851978b2ac8642080156c6294f8d0fc5212b4e4bcca713830306a",
+                "sha256:1efdaacc7a26e94f2b197a80079b1058f6aa644a6094c0a322349e2b9c41f6b1"
+            ],
+            "index": "pypi",
+            "version": "==5.1.1"
         },
         "greenlet": {
             "hashes": [
@@ -171,6 +187,22 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==2.0.1"
+        },
+        "python-engineio": {
+            "hashes": [
+                "sha256:d510329b6d8ed5662547862f58bc73659ae62defa66b66d745ba021de112fa62",
+                "sha256:f3ef9a2c048d08990f294c5f8991f6f162c3b12ecbd368baa0d90441de907d1c"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==4.2.1"
+        },
+        "python-socketio": {
+            "hashes": [
+                "sha256:d84fa319e943aa18328280c8fbc4e2ba03cf9e96ff905b294b8b482af64532c9",
+                "sha256:ef4e273ddfebb421144a228cbab1e7e27ffe8d372514fa561e57d590ea6627b0"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==5.4.1"
         },
         "sqlalchemy": {
             "hashes": [
