@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    camera_environment = Environment(1000, 1000)
+    camera_environment = Environment(100, 100)
     return render_template("environment.html", camera_environment=camera_environment)
 
 

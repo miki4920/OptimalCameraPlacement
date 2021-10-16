@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="../static/environment.css">
 </head>
 <body>
-    {% for column in range(camera_environment.y) %}
-        {% for row in range(camera_environment.x) %}
-            <p>.</p>
-        {% endfor %}
-    {% endfor %}
+    <aside>
+        <p>Hello</p>
+    </aside>
+    <main id="camera_container">
+        <canvas id="camera_canvas"></canvas>
+    </main>
+    <aside>
+        <p>There</p>
+    </aside>
+    <script href="../static.environment.js"></script>
 </body>
 </html>
