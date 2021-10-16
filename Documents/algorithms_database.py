@@ -22,4 +22,16 @@ class Source(Base):
     id = Column(String(256), primary_key=True)
 
 
+engine = create_engine('sqlite:///Documents/algorithms.db')
+session = sessionmaker(bind=engine)()
+Base.metadata.create_all(engine)
+
+source = input("Source: ")
+algorithm = input("Algorithm: ")
+
+source_exists = session.query(Source).filter(Source.id == source).first()
+source_exists = source_exists if source_exists else None
+
+algorithm_exists = session.query(Algorithm).filter(Algorithm.id == algorithm).first()
+algorithm_exists = algorithm_exists if algorithm_exists else None
 
