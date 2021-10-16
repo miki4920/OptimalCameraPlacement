@@ -5,6 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-    
+    {% for column in range(camera_environment.y) %}
+        {% for row in range(camera_environment.x) %}
+            <p>.</p>
+        {% endfor %}
+    {% endfor %}
 </body>
 </html>
