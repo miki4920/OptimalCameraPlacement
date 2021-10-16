@@ -35,3 +35,18 @@ source_exists = source_exists if source_exists else None
 algorithm_exists = session.query(Algorithm).filter(Algorithm.id == algorithm).first()
 algorithm_exists = algorithm_exists if algorithm_exists else None
 
+if source_exists and algorithm_exists:
+    quit()
+if not source_exists:
+    source = Source(id=source)
+    session.add(source)
+else:
+    source = session.query(Source).filter(Source.id == source).first()
+if not algorithm_exists:
+    algorithm = Algorithm(id=algorithm)
+    session.add(algorithm)
+else:
+    algorithm = session.query(Algorithm).filter(Algorithm.id == algorithm).first()
+
+algorithm.sources.append(source)
+session.commit()
