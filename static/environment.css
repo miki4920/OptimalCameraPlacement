@@ -22,6 +22,7 @@ main {
 }
 
 canvas {
+    z-index: 100;
 }
 
 aside {
