@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 
 from environment import Environment
@@ -15,8 +15,22 @@ def index():
 
 
 @socket.on("connect")
-def resolution():
-    print(1)
+def connect():
+    current_users[request.sid] = set()
+
+
+@socket.on("disconnect")
+def disconnect():
+    del current_users[request.sid]
+
+
+@socket.on("element")
+def element(message):
+    position = message.get("position")
+    position_set = current_users[request.sid]
+    if position not in position_set:
+        position_set.add(position)
+        print(current_users[request.sid])
 
 
 if __name__ == '__main__':
