@@ -6,11 +6,17 @@ from environment import Environment
 app = Flask(__name__)
 socket = SocketIO(app)
 
+current_users = {}
+
 
 @app.route('/')
-def hello_world():
-    camera_environment = Environment(100, 100)
-    return render_template("environment.html", camera_environment=camera_environment)
+def index():
+    return render_template("environment.html")
+
+
+@socket.on("connect")
+def resolution():
+    print(1)
 
 
 if __name__ == '__main__':
