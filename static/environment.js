@@ -37,4 +37,6 @@ function draw() {
     })
 }
 
+socket = io.connect(window.location.host, {autoConnect: false});
+
 draw()
