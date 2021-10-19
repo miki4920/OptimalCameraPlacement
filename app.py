@@ -24,13 +24,10 @@ def disconnect():
     del current_users[request.sid]
 
 
-@socket.on("element")
-def element(message):
-    position = message.get("position")
-    position_set = current_users[request.sid]
-    if position not in position_set:
-        position_set.add(position)
-        print(current_users[request.sid])
+@socket.on("canvas")
+def canvas(message):
+    user_canvas = set(message.get("canvas"))
+    print(user_canvas)
 
 
 if __name__ == '__main__':
