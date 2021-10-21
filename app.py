@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 
+from typing import Dict
+
 from environment import Environment
 
 app = Flask(__name__)
@@ -25,7 +27,7 @@ def disconnect():
 
 
 @socket.on("canvas")
-def canvas(message):
+def canvas(message: Dict[str, str]):
     user_canvas = set(message.get("canvas"))
     print(user_canvas)
 
