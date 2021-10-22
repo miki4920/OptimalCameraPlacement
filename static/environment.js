@@ -7,12 +7,15 @@ let x;
 let y;
 let context;
 
-
-window.onload = window.onresize = function() {
+function resize_window() {
     canvas = document.getElementById('camera_canvas')
     canvas.width = canvas.clientWidth - (canvas.clientWidth % pixel_resolution);
     canvas.height = canvas.clientHeight - (canvas.clientHeight % pixel_resolution);
 }
+
+
+
+
 
 function draw_pixel(canvas, socket, colour, event) {
     x = event["layerX"] - (event["layerX"] % pixel_resolution)
@@ -56,9 +59,12 @@ function draw(socket) {
 }
 
 function send_canvas_positions() {
-    socket.emit("canvas", {"canvas": Array.from(set)})
+    socket.emit("canvas", {"canvas": [...set]})
 }
 
-socket = io.connect(window.location.host, {autoConnect: true});
+window.onload = window.onresize = function() {
+    resize_window()
+}
 
+socket = io.connect(window.location.host);
 draw(socket)
