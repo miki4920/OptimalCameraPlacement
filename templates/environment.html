@@ -7,9 +7,18 @@
 </head>
 <body>
     <aside>
-        <menu>
-            <li><button onclick="send_canvas_positions()">Send</button></li>
-        </menu>
+        <section>
+            <label for="width">Width</label>
+            <input id="width">
+            <label for="height">Height</label>
+            <input id="height">
+            <button onclick="resize_window(change_dimensions=true)">Update</button>
+        </section>
+        <section>
+            <button onclick="send_canvas_positions()">Send</button>
+        </section>
+
+
     </aside>
     <main id="camera_container">
         <canvas id="camera_canvas" ></canvas>
