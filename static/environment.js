@@ -1,29 +1,53 @@
 let canvas;
+let width;
+let height;
+
+let pixel_resolution;
+let default_size = 20;
+
 let set = new Set();
-let pixel_resolution = 40;
 
 let drawing_mode = 0;
 let x;
 let y;
 let context;
 
-function resize_window() {
-    canvas = document.getElementById('camera_canvas')
-    canvas.width = canvas.clientWidth - (canvas.clientWidth % pixel_resolution);
-    canvas.height = canvas.clientHeight - (canvas.clientHeight % pixel_resolution);
+
+function fill_canvas(canvas) {
+    let context = canvas.getContext("2d")
+    context.fillStyle = "white"
+    set.forEach(function(element) {
+        context.fillRect(element[0]*pixel_resolution[0], element[1]*pixel_resolution[1], pixel_resolution[0], pixel_resolution[1])
+    })
 }
 
 
+function resize_window(change_dimensions=false) {
+    canvas = document.getElementById('camera_canvas')
+    update_resolution(change_dimensions)
+    canvas.width = canvas.clientWidth - (canvas.clientWidth % pixel_resolution[0])
+    canvas.height = canvas.clientHeight - (canvas.clientHeight % pixel_resolution[1])
+    fill_canvas(canvas)
+}
 
-
+function update_resolution(change_dimensions) {
+    canvas = document.getElementById('camera_canvas')
+    width = document.getElementById('width').value
+    width = width && !isNaN(width) ? parseInt(width) : default_size
+    height = document.getElementById('height').value
+    height = height && !isNaN(height) ? parseInt(height) : default_size
+    pixel_resolution = [Math.floor(canvas.clientWidth / width),
+                        Math.floor(canvas.clientHeight / height)]
+    set = change_dimensions ? new Set() : set;
+}
 
 function draw_pixel(canvas, socket, colour, event) {
-    x = event["layerX"] - (event["layerX"] % pixel_resolution)
-    y = event["layerY"] - (event["layerY"] % pixel_resolution)
+    x = event["layerX"] - (event["layerX"] % pixel_resolution[0])
+    y = event["layerY"] - (event["layerY"] % pixel_resolution[1])
     context = canvas.getContext("2d")
     context.fillStyle = colour;
-    context.fillRect(x, y, pixel_resolution,pixel_resolution);
-    return x/pixel_resolution + "," + y/pixel_resolution
+    context.fillRect(x, y, pixel_resolution[0], pixel_resolution[1]);
+    return [x/pixel_resolution[0], y/pixel_resolution[1]]
 }
 
 function draw(socket) {
@@ -41,7 +65,7 @@ function draw(socket) {
                 drawing_mode = 0
         }
     })
-    canvas.addEventListener("mouseup", function(e) {
+    canvas.addEventListener("mouseup", function() {
         drawing_mode = 0;
     })
     canvas.addEventListener("mousemove", function(e) {
@@ -67,4 +91,5 @@ window.onload = window.onresize = function() {
 }
 
 socket = io.connect(window.location.host);
+
 draw(socket)
