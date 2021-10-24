@@ -2,7 +2,6 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-size: 1.17em;
     color: rgb(190, 190, 190);
 }
 
@@ -28,21 +27,32 @@ canvas {
 aside {
     display: flex;
     justify-content: flex-start;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
     flex-basis: 0;
     flex-grow: 1;
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-menu {
-    list-style: none;
+section {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+label {
+    flex-grow: 1;
+}
+
+input {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none;
+    outline: none;
 }
 
 button {
     background-color: rgba(255, 255, 255, 0.05);
     border: none;
     cursor: pointer;
+    flex-grow: 1;
 }
 
 button:hover {
