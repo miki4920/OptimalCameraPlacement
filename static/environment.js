@@ -1,3 +1,10 @@
+const Colours = {
+    EMPTY: "rgb(18, 18, 18)",
+    SOLID: "white",
+    CAMERA: "green"
+}
+
+
 let canvas;
 let width;
 let height;
@@ -6,25 +13,35 @@ let pixel_resolution;
 let default_size = 20;
 
 let dictionary = {};
+let drawing_colour = Colours.EMPTY;
+let drawing = false;
 
-let drawing_mode = 0;
 let x;
 let y;
 let context;
 
-class Colours {
-    static solid = "white"
-    static empty = "rgb(18, 18, 18)"
+
+function change_colour(colour) {
+    switch(colour) {
+        case "SOLID":
+            drawing_colour = Colours.SOLID
+            break
+        case "CAMERA":
+            drawing_colour = Colours.CAMERA
+            break
+        default:
+            drawing_colour = Colours.EMPTY
+            break
+    }
 }
 
 function fill_canvas(canvas) {
     let context = canvas.getContext("2d")
-    dictionary.forEach(function(element)  {
+    Object.keys(dictionary).forEach(function(element)  {
         context.fillStyle = element[2]
         context.fillRect(element[0]*pixel_resolution[0], element[1]*pixel_resolution[1], pixel_resolution[0], pixel_resolution[1])
     })
 }
-
 
 function resize_window(change_dimensions=false) {
     canvas = document.getElementById('camera_canvas')
@@ -42,56 +59,37 @@ function update_resolution(change_dimensions) {
     height = height && !isNaN(height) ? parseInt(height) : default_size
     pixel_resolution = [canvas.clientWidth / width,
                         canvas.clientHeight / height]
-    dictionary = change_dimensions ? new Set() : dictionary;
+    dictionary = change_dimensions ? {} : dictionary;
 }
 
-function draw_pixel(canvas, socket, colour, event) {
+function draw_pixel(canvas, event) {
     x = Math.floor(event["layerX"]/pixel_resolution[0]) * pixel_resolution[0]
     y = Math.floor(event["layerY"]/pixel_resolution[1]) * pixel_resolution[1]
     context = canvas.getContext("2d")
-    context.fillStyle = colour;
+    context.fillStyle = drawing_colour;
     context.fillRect(x, y, pixel_resolution[0], pixel_resolution[1]);
-    return [Math.floor(x/pixel_resolution[0]), Math.floor(y/pixel_resolution[1]), colour]
+    return [Math.floor(x/pixel_resolution[0]).toString() + "," + Math.floor(y/pixel_resolution[1]).toString(), [drawing_colour]]
 }
 
-function draw(socket) {
+function draw() {
     canvas = document.getElementById('camera_canvas');
-    canvas.addEventListener('contextmenu', event => event.preventDefault())
-    canvas.addEventListener("mousedown", function(e) {
-        switch(e.button) {
-            case 0:
-                drawing_mode = 1
-                break
-            case 2:
-                drawing_mode = 2
-                break
-            default:
-                drawing_mode = 0
-        }
+    canvas.addEventListener("mousedown", function() {
+        drawing = true
     })
     canvas.addEventListener("mouseup", function() {
-        drawing_mode = 0;
+        drawing = false
     })
     canvas.addEventListener("mousemove", function(e) {
-        if(drawing_mode === 1) {
-            let element = draw_pixel(canvas, socket, Colours.solid, e)
-            console.log(dictionary.has(element))
-            if (!dictionary.has(element)) {
-                dictionary.add(element)
+        if (drawing) {
+            let element = draw_pixel(canvas, e)
+            if(drawing_colour === Colours.EMPTY) {
+                dictionary[element[0]] = element[1]
             }
-
-        }
-        else if(drawing_mode === 2) {
-            let element = draw_pixel(canvas, socket, Colours.empty, e)
-            if (dictionary.has(element)) {
-                dictionary.delete(element)
+            else {
+                delete dictionary[element[0]]
             }
         }
     })
-}
-
-function send_canvas_positions() {
-    socket.emit("canvas", {"canvas": [...dictionary]})
 }
 
 window.onload = window.onresize = function() {
@@ -99,5 +97,4 @@ window.onload = window.onresize = function() {
 }
 
 socket = io.connect(window.location.host);
-
-draw(socket)
+draw()
