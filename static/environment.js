@@ -5,18 +5,22 @@ let height;
 let pixel_resolution;
 let default_size = 20;
 
-let set = new Set();
+let dictionary = {};
 
 let drawing_mode = 0;
 let x;
 let y;
 let context;
 
+class Colours {
+    static solid = "white"
+    static empty = "rgb(18, 18, 18)"
+}
 
 function fill_canvas(canvas) {
     let context = canvas.getContext("2d")
-    context.fillStyle = "white"
-    set.forEach(function(element) {
+    dictionary.forEach(function(element)  {
+        context.fillStyle = element[2]
         context.fillRect(element[0]*pixel_resolution[0], element[1]*pixel_resolution[1], pixel_resolution[0], pixel_resolution[1])
     })
 }
@@ -38,7 +42,7 @@ function update_resolution(change_dimensions) {
     height = height && !isNaN(height) ? parseInt(height) : default_size
     pixel_resolution = [canvas.clientWidth / width,
                         canvas.clientHeight / height]
-    set = change_dimensions ? new Set() : set;
+    dictionary = change_dimensions ? new Set() : dictionary;
 }
 
 function draw_pixel(canvas, socket, colour, event) {
@@ -46,9 +50,8 @@ function draw_pixel(canvas, socket, colour, event) {
     y = Math.floor(event["layerY"]/pixel_resolution[1]) * pixel_resolution[1]
     context = canvas.getContext("2d")
     context.fillStyle = colour;
-    console.log(event["layerX"], x)
     context.fillRect(x, y, pixel_resolution[0], pixel_resolution[1]);
-    return [x/pixel_resolution[0], y/pixel_resolution[1]]
+    return [Math.floor(x/pixel_resolution[0]), Math.floor(y/pixel_resolution[1]), colour]
 }
 
 function draw(socket) {
@@ -71,20 +74,24 @@ function draw(socket) {
     })
     canvas.addEventListener("mousemove", function(e) {
         if(drawing_mode === 1) {
-            let element = draw_pixel(canvas, socket, "white", e)
-            set.add(element)
+            let element = draw_pixel(canvas, socket, Colours.solid, e)
+            console.log(dictionary.has(element))
+            if (!dictionary.has(element)) {
+                dictionary.add(element)
+            }
+
         }
         else if(drawing_mode === 2) {
-            let element = draw_pixel(canvas, socket, "rgb(18, 18, 18)", e)
-            if (set.has(element)) {
-                set.delete(element)
+            let element = draw_pixel(canvas, socket, Colours.empty, e)
+            if (dictionary.has(element)) {
+                dictionary.delete(element)
             }
         }
     })
 }
 
 function send_canvas_positions() {
-    socket.emit("canvas", {"canvas": [...set]})
+    socket.emit("canvas", {"canvas": [...dictionary]})
 }
 
 window.onload = window.onresize = function() {

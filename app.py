@@ -28,7 +28,7 @@ def disconnect():
 
 @socket.on("canvas")
 def canvas(message: Dict[str, str]):
-    user_canvas = set(message.get("canvas"))
+    print(message.get("canvas"))
 
 
 if __name__ == '__main__':
