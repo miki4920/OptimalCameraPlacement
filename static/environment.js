@@ -25,8 +25,8 @@ function fill_canvas(canvas) {
 function resize_window(change_dimensions=false) {
     canvas = document.getElementById('camera_canvas')
     update_resolution(change_dimensions)
-    canvas.width = canvas.clientWidth - (canvas.clientWidth % pixel_resolution[0])
-    canvas.height = canvas.clientHeight - (canvas.clientHeight % pixel_resolution[1])
+    canvas.width = canvas.clientWidth
+    canvas.height = canvas.clientHeight
     fill_canvas(canvas)
 }
 
@@ -36,16 +36,17 @@ function update_resolution(change_dimensions) {
     width = width && !isNaN(width) ? parseInt(width) : default_size
     height = document.getElementById('height').value
     height = height && !isNaN(height) ? parseInt(height) : default_size
-    pixel_resolution = [Math.floor(canvas.clientWidth / width),
-                        Math.floor(canvas.clientHeight / height)]
+    pixel_resolution = [canvas.clientWidth / width,
+                        canvas.clientHeight / height]
     set = change_dimensions ? new Set() : set;
 }
 
 function draw_pixel(canvas, socket, colour, event) {
-    x = event["layerX"] - (event["layerX"] % pixel_resolution[0])
-    y = event["layerY"] - (event["layerY"] % pixel_resolution[1])
+    x = Math.floor(event["layerX"]/pixel_resolution[0]) * pixel_resolution[0]
+    y = Math.floor(event["layerY"]/pixel_resolution[1]) * pixel_resolution[1]
     context = canvas.getContext("2d")
     context.fillStyle = colour;
+    console.log(event["layerX"], x)
     context.fillRect(x, y, pixel_resolution[0], pixel_resolution[1]);
     return [x/pixel_resolution[0], y/pixel_resolution[1]]
 }
