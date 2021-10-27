@@ -38,8 +38,8 @@ function change_colour(colour) {
 function fill_canvas(canvas) {
     let context = canvas.getContext("2d")
     Object.keys(dictionary).forEach(function(element)  {
-        context.fillStyle = element[2]
-        context.fillRect(element[0]*pixel_resolution[0], element[1]*pixel_resolution[1], pixel_resolution[0], pixel_resolution[1])
+        context.fillStyle = dictionary[element][0]
+        context.fillRect(element.split(",")[0]*pixel_resolution[0], element.split(",")[1]*pixel_resolution[1], pixel_resolution[0], pixel_resolution[1])
     })
 }
 
@@ -83,10 +83,10 @@ function draw() {
         if (drawing) {
             let element = draw_pixel(canvas, e)
             if(drawing_colour === Colours.EMPTY) {
-                dictionary[element[0]] = element[1]
+                delete dictionary[element[0]]
             }
             else {
-                delete dictionary[element[0]]
+                dictionary[element[0]] = element[1]
             }
         }
     })
