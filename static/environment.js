@@ -10,7 +10,7 @@ let width;
 let height;
 
 let pixel_resolution = [1, 1];
-let default_size = 10;
+let default_size = 40;
 
 let dictionary = {};
 let drawing_colour = Colours.EMPTY;
@@ -76,7 +76,6 @@ function update_position(x, y) {
 function draw_pixel(canvas, event, x, y) {
     context = canvas.getContext("2d")
     context.fillStyle = drawing_colour;
-    console.log(pixel_resolution)
     context.fillRect(x, y, Math.floor(pixel_resolution[0]), Math.floor(pixel_resolution[1]));
     return [Math.floor(x/pixel_resolution[0]).toString() + "," + Math.floor(y/pixel_resolution[1]).toString(), [drawing_colour]]
 }
@@ -90,8 +89,8 @@ function draw() {
         drawing = false
     })
     canvas.addEventListener("mousemove", function(e) {
-        x = Math.floor(e["layerX"]/pixel_resolution[0]) * pixel_resolution[0]
-        y = Math.floor(e["layerY"]/pixel_resolution[1]) * pixel_resolution[1]
+        x = e["layerX"]
+        y = e["layerY"]
         update_position(x, y)
         if (drawing) {
             let element = draw_pixel(canvas, e, x, y)
@@ -103,7 +102,8 @@ function draw() {
                 dictionary[element[0]] = element[1]
             }
         }
-    })
+
+    }, {passive: true, capture: true})
 }
 
 window.onload = window.onresize = function() {
