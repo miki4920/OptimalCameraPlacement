@@ -2,7 +2,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    color: rgb(190, 190, 190);
+    color: rgb(255, 255, 255);
 }
 
 body, html {
@@ -16,10 +16,18 @@ main {
     display: flex;
     flex-direction: column;
     flex-basis: 50%;
+    flex-grow: 0;
+    flex-shrink: 1;
+}
+
+#position {
+    position: absolute;
+    user-select: none;
+    z-index: 100;
+    color: rgb(180, 180, 255);
 }
 
 canvas {
-    flex-grow: 1;
     width: 100%;
     height: 100%;
 }
@@ -35,7 +43,7 @@ aside {
 
 section {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
 }
 
 label {
