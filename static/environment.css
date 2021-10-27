@@ -23,6 +23,7 @@ main {
 #position {
     position: absolute;
     user-select: none;
+    pointer-events: none;
     z-index: 100;
     color: rgb(180, 180, 255);
 }
