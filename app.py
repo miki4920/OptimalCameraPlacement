@@ -4,7 +4,7 @@ from flask_socketio import SocketIO
 from typing import Dict
 
 from environment import Environment
-from options import items
+from options import options
 
 app = Flask(__name__)
 socket = SocketIO(app)
@@ -14,7 +14,7 @@ current_users = {}
 
 @app.route('/')
 def index():
-    return render_template("environment.html", items=items)
+    return render_template("environment.html", options=options)
 
 
 @socket.on("connect")

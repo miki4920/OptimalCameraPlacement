@@ -5,14 +5,14 @@
     <title>Title</title>
     <link rel="stylesheet" href="../static/environment.css">
 </head>
-<body>
+<body   >
     <aside>
         <section>
             <label for="width">Width</label>
             <input id="width">
             <label for="height">Height</label>
             <input id="height">
-            <button onclick="resize_window(change_dimensions=true)">Update</button>
+            <button class="clickable_button" onclick="resize_window(change_dimensions=true)">Update</button>
         </section>
     </aside>
     <main id="camera_container">
@@ -21,14 +21,17 @@
     </main>
     <aside>
         <section>
-            <button onclick="change_colour('EMPTY')">Empty</button>
-            <button onclick="change_colour('SOLID')">Solid</button>
-            <button onclick="change_colour('CAMERA')">Camera</button>
+            {% for key in options %}
+                <button onclick="change_colour('{{key}}')" style="background-color: {{options[key]}}">{{ key }}</button>
+            {% endfor %}
         </section>
     </aside>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
         integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
         crossorigin="anonymous"></script>
+    <script>
+        let Colours = {{ options | tojson | safe }};
+    </script>
     <script src="/static/environment.js"></script>
 </body>
 </html>
