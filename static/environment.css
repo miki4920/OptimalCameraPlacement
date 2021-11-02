@@ -58,12 +58,15 @@ input {
 }
 
 button {
-    background-color: rgba(255, 255, 255, 0.05);
     border: none;
     cursor: pointer;
     flex-grow: 1;
 }
 
-button:hover {
+.clickable_button {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.clickable_button:hover {
     background-color: rgba(255, 255, 255, 0.09);
 }

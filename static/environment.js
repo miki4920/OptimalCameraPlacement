@@ -1,10 +1,3 @@
-const Colours = {
-    EMPTY: "rgb(18, 18, 18)",
-    SOLID: "white",
-    CAMERA: "green"
-}
-
-
 let canvas;
 let width;
 let height;
@@ -13,7 +6,7 @@ let pixel_resolution = [1, 1];
 let default_size = 40;
 
 let dictionary = {};
-let drawing_colour = Colours.EMPTY;
+let drawing_colour = Colours["EMPTY"];
 let drawing = false;
 
 let x;
@@ -42,17 +35,7 @@ function resize_window(change_dimensions=false) {
 
 
 function change_colour(colour) {
-    switch(colour) {
-        case "SOLID":
-            drawing_colour = Colours.SOLID
-            break
-        case "CAMERA":
-            drawing_colour = Colours.CAMERA
-            break
-        default:
-            drawing_colour = Colours.EMPTY
-            break
-    }
+    drawing_colour = Colours[colour];
 }
 
 
