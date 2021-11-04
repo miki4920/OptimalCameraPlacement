@@ -1,5 +1,6 @@
 options = {
-    "EMPTY": "rgb(18, 18, 18)",
-    "WALL": "white",
-    "CAMERA": "green"
+    "WALL": "rgb(18, 18, 18)",
+    "EMPTY": "white",
+    "CAMERA": "green",
+    "SAMPLE": "red"
 }
