@@ -29,12 +29,8 @@ def disconnect():
 
 @socket.on("canvas")
 def canvas(message: Dict[str, str]):
-    drawn_canvas = message.get("canvas")
-    for item in drawn_canvas:
-        item.process()
-        for sub_item in item:
-            set(sub_item)
-            sub_item.process()
+    drawn_canvas = message.get("dictionary")
+    print(drawn_canvas)
 
 
 if __name__ == '__main__':
