@@ -88,8 +88,18 @@ function draw() {
 
 function sample() {
     let context = canvas.getContext("2d");
+    let count = 0;
     Object.values(dictionary).forEach(function(element)  {
-        draw_pixel(context, element["x"]*pixel_resolution[0], element["y"]*pixel_resolution[1], element["type"])
+        if(count % Math.floor(Math.sqrt(Object.keys(dictionary).length)) === 0) {
+            element = draw_pixel(context, element["x"]*pixel_resolution[0], element["y"]*pixel_resolution[1], "SAMPLE")
+            dictionary[element[0]] = element[1];
+        }
+        else {
+            element = draw_pixel(context, element["x"]*pixel_resolution[0], element["y"]*pixel_resolution[1], element["type"] === "SAMPLE" ? "EMPTY" : element["type"])
+            dictionary[element[0]] = element[1];
+        }
+        count += 1
+        resize_window()
     })
 }
 
