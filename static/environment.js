@@ -1,11 +1,5 @@
 let default_size = 10;
-
-let drawing_colour = "WALL";
 let drawing = false;
-
-let x;
-let y;
-let context;
 
 
 class Cell {
@@ -51,20 +45,23 @@ class Environment {
         let context = this.get_context();
         this.board.forEach(function (row) {
             row.forEach(function (element) {
-                draw_pixel(context, element.x * this.pixel_resolution[0], element.y * this.pixel_resolution[1], element.colour)
+                this.draw(context, element.x * this.pixel_resolution[0], element.y * this.pixel_resolution[1], element.colour)
             })
         })
     }
 
     update_canvas() {
-        width = document.getElementById('width').value;
+        this.canvas.width = this.canvas.clientWidth;
+        this.canvas.height = this.canvas.clientHeight;
+
+        let width = document.getElementById('width').value;
         width = width && !isNaN(width) ? parseInt(width) : default_size;
-        height = document.getElementById('height').value;
+        let height = document.getElementById('height').value;
         height = height && !isNaN(height) ? parseInt(height) : default_size;
+
         this.pixel_resolution = [this.canvas.clientWidth / width,
             this.canvas.clientHeight / height];
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
+
         this.fill_canvas();
     }
 
@@ -72,62 +69,46 @@ class Environment {
         this.selected_type = type
     }
 
-    normalise(x, y) {
-        x = Math.floor(x/this.pixel_resolution[0]) * this.pixel_resolution
-        y = Math.floor(y/this.pixel_resolution[0]) * this.pixel_resolution
-        return [x, y]
+    normalise(value, index) {
+        return Math.floor(value/this.pixel_resolution[index])
     }
 
     draw(x, y) {
         let context = this.get_context();
         context.fillStyle = Colours[this.selected_type];
-        context.fillRect(x, y, Math.floor(pixel_resolution[0]), Math.floor(pixel_resolution[1]));
+        context.fillRect(this.normalise(x, 0)*this.pixel_resolution[0],
+            this.normalise(y, 1)*this.pixel_resolution[1], Math.floor(this.pixel_resolution[0]), Math.floor(this.pixel_resolution[1]));
     }
 
 }
 
 function update_position(x, y) {
-    document.getElementById("position").innerText = "X: " + Math.floor(x / pixel_resolution[0]) + ", Y: " + Math.floor(y / pixel_resolution[1])
+    document.getElementById("position").innerText = "X: " + Math.floor(x / environment.pixel_resolution[0]) + ", Y: " + Math.floor(y / environment.pixel_resolution[1])
 }
 
-
-function draw_pixel(context, x, y, type) {
-    context.fillStyle = Colours[type];
-
-    x = Math.floor(x / pixel_resolution[0]);
-    y = Math.floor(y / pixel_resolution[1])
-    return [x.toString() + "," + y.toString(), {"x": x, "y": y, "type": type}]
-}
-
-function draw() {
-    canvas.addEventListener("mousedown", function () {
+function set_event_listeners(environment) {
+    environment.canvas.addEventListener("mousedown", function () {
         drawing = true
     })
-    canvas.addEventListener("mouseup", function () {
+    environment.canvas.addEventListener("mouseup", function () {
         drawing = false
     })
-    canvas.addEventListener("mousemove", function (e) {
-        x = e["layerX"]
-        y = e["layerY"]
-        update_position(x, y)
-        if (drawing) {
-            let element = draw_pixel(context, x, y, drawing_colour)
-            resize_window()
-            if (drawing_colour === "WALL") {
-                delete dictionary[element[0]]
-            } else {
-                dictionary[element[0]] = element[1]
-            }
+    environment.canvas.addEventListener("mousemove", function (e) {
+        let x = e["layerX"]
+        let y = e["layerY"]
+        update_position(x, y, environment)
+        if(drawing) {
+            environment.draw(x, y)
         }
-
-    }, {passive: true, capture: true})
+    })
 }
 
-window.onload = window.onresize = function () {
-    resize_window()
-}
 
-socket = io();
+
+// window.onload = window.onresize = function () {
+//     resize_window()
+// }
+
 
 environment = new Environment()
-set_event_listeners()
+set_event_listeners(environment)
