@@ -31,7 +31,7 @@ class Environment {
         for (let x = 0; x < rows; x++) {
             map[x] = [];
             for (let y = 0; y < columns; y++) {
-                map.push(new Cell(x, y, type,))
+                map[x].push(new Cell(x, y, type,))
             }
         }
         return map;
@@ -42,10 +42,9 @@ class Environment {
     }
 
     fill_canvas() {
-        let context = this.get_context();
-        this.board.forEach(function (row) {
-            row.forEach(function (element) {
-                this.draw(context, element.x * this.pixel_resolution[0], element.y * this.pixel_resolution[1], element.colour)
+        this.board.forEach((row) => {
+            row.forEach((element) => {
+                this.draw(element.x, element.y, element.colour)
             })
         })
     }
@@ -61,7 +60,6 @@ class Environment {
 
         this.pixel_resolution = [this.canvas.clientWidth / width,
             this.canvas.clientHeight / height];
-
         this.fill_canvas();
     }
 
@@ -70,20 +68,20 @@ class Environment {
     }
 
     normalise(value, index) {
-        return Math.floor(value/this.pixel_resolution[index])
+        return Math.floor(value / this.pixel_resolution[index])
     }
 
-    draw(x, y) {
+    draw(x, y, colour) {
         let context = this.get_context();
-        context.fillStyle = Colours[this.selected_type];
-        context.fillRect(this.normalise(x, 0)*this.pixel_resolution[0],
-            this.normalise(y, 1)*this.pixel_resolution[1], Math.floor(this.pixel_resolution[0]), Math.floor(this.pixel_resolution[1]));
+        context.fillStyle = colour;
+        context.fillRect(x*this.pixel_resolution[0], y*this.pixel_resolution[1],
+            Math.floor(this.pixel_resolution[0] -1), Math.floor(this.pixel_resolution[1] -1));
     }
 
 }
 
 function update_position(x, y) {
-    document.getElementById("position").innerText = "X: " + Math.floor(x / environment.pixel_resolution[0]) + ", Y: " + Math.floor(y / environment.pixel_resolution[1])
+    document.getElementById("position").innerText = "X: " + x+ ", Y: " + y
 }
 
 function set_event_listeners(environment) {
@@ -94,21 +92,19 @@ function set_event_listeners(environment) {
         drawing = false
     })
     environment.canvas.addEventListener("mousemove", function (e) {
-        let x = e["layerX"]
-        let y = e["layerY"]
-        update_position(x, y, environment)
-        if(drawing) {
-            environment.draw(x, y)
+        let x = environment.normalise(e["layerX"], 0);
+        let y = environment.normalise(e["layerY"], 1);
+        update_position(x, y, environment);
+        if (drawing) {
+            environment.board[x][y].update(environment.selected_type)
+            environment.update_canvas()
         }
     })
+    window.onload = window.onresize = function () {
+        environment.update_canvas();
+    }
 }
 
 
-
-// window.onload = window.onresize = function () {
-//     resize_window()
-// }
-
-
-environment = new Environment()
+environment = new Environment(default_size, "WALL")
 set_event_listeners(environment)
