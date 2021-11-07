@@ -24,7 +24,7 @@
     <aside>
         <section>
             {% for key in options %}
-                <button onclick="change_colour('{{key}}')" style="background-color: {{options[key]}}">{{ key }}</button>
+                <button onclick="environment.change_selected_type('{{key}}')" style="background-color: {{options[key]}}">{{ key }}</button>
             {% endfor %}
         </section>
     </aside>
