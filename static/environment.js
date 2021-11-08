@@ -78,7 +78,8 @@ class Environment {
     }
 
     normalise(value, index) {
-        return Math.floor(value / this.pixel_resolution[index])
+        let result = Math.floor(value / this.pixel_resolution[index]);
+        return result > 0 ? result : 0; 
     }
 
     draw(x, y, colour) {
