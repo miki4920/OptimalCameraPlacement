@@ -90,11 +90,12 @@ class Environment {
 
     sample() {
         let sampling_rate = document.getElementById("sampling_rate").value;
-        sampling_rate = Math.floor((this.width*this.height)/Math.pow(2, sampling_rate-1));
-        console.log(sampling_rate)
         for(let x=0; x<this.width; x++) {
             for(let y=0; y<this.width; y++) {
-                if((this.width*x+y) % sampling_rate === 0) {
+                if(this.board[x][y].type === "SAMPLE") {
+                    this.board[x][y].update("EMPTY");
+                }
+                if(x===y && this.board[x][y].type === "EMPTY") {
                     this.board[x][y].update("SAMPLE");
                 }
             }
