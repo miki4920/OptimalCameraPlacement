@@ -19,22 +19,32 @@ class Cell {
 
 class Environment {
     constructor(size, default_type) {
-        this.board = this.create_board(size, size, default_type);
-        this.selected_type = default_type;
         this.canvas = document.getElementById("camera_canvas");
+        this.board = [];
+        this.width = size
+        this.height = size
+        this.default_type = default_type;
+        this.selected_type = default_type;
+        this.create_board(default_type);
         this.pixel_resolution = [];
-        this.update_canvas();
     }
 
-    create_board(rows, columns, type) {
+    update_board() {
+        this.width = document.getElementById("width").value
+        this.height = document.getElementById("height").value
+        this.create_board(this.default_type)
+    }
+
+    create_board(type) {
         let map = [];
-        for (let x = 0; x < rows; x++) {
+        for (let x = 0; x < this.width; x++) {
             map[x] = [];
-            for (let y = 0; y < columns; y++) {
+            for (let y = 0; y < this.height; y++) {
                 map[x].push(new Cell(x, y, type,))
             }
         }
-        return map;
+        this.board = map;
+        this.update_canvas();
     }
 
     get_context() {
@@ -78,6 +88,19 @@ class Environment {
             Math.floor(this.pixel_resolution[0] -1), Math.floor(this.pixel_resolution[1] -1));
     }
 
+    sample() {
+        let sampling_rate = document.getElementById("sampling_rate").value;
+        sampling_rate = Math.floor((this.width*this.height)/Math.pow(2, sampling_rate-1));
+        console.log(sampling_rate)
+        for(let x=0; x<this.width; x++) {
+            for(let y=0; y<this.width; y++) {
+                if((this.width*x+y) % sampling_rate === 0) {
+                    this.board[x][y].update("SAMPLE");
+                }
+            }
+        }
+        this.update_canvas();
+    }
 }
 
 function update_position(x, y) {

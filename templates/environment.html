@@ -12,9 +12,10 @@
             <input id="width">
             <label for="height">Height</label>
             <input id="height">
-            <button class="clickable_button" onclick="resize_window(change_dimensions=true)">Update</button>
-            <button class="clickable_button" onclick="sample()">Sample</button>
-            <button class="clickable_button" onclick="send_dictionary()">Send</button>
+            <button class="clickable_button" onclick="environment.update_board()">Update</button>
+            <label for="sampling_rate"></label>
+            <input id="sampling_rate">
+            <button class="clickable_button" onclick="environment.sample()">Sample</button>
         </section>
     </aside>
     <main id="camera_container">
