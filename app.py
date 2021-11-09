@@ -29,8 +29,7 @@ def disconnect():
 
 @socket.on("canvas")
 def canvas(message: Dict[str, str]):
-    drawn_canvas = message.get("dictionary")
-
+    drawn_canvas = Environment(message.get("dictionary"))
 
 
 if __name__ == '__main__':
