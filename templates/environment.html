@@ -14,7 +14,7 @@
             <input id="height">
             <button class="clickable_button" onclick="environment.update_board()">Update</button>
             <label for="sampling_rate"></label>
-            <input id="sampling_rate">
+            <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate" oninput="environment.sample()">
             <button class="clickable_button" onclick="environment.sample()">Sample</button>
         </section>
     </aside>

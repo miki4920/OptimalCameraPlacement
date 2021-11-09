@@ -89,13 +89,13 @@ class Environment {
     }
 
     sample() {
-        let sampling_rate = document.getElementById("sampling_rate").value;
+        let sampling_rate = parseInt(document.getElementById("sampling_rate").value);
         for(let x=0; x<this.width; x++) {
             for(let y=0; y<this.width; y++) {
                 if(this.board[x][y].type === "SAMPLE") {
                     this.board[x][y].update("EMPTY");
                 }
-                if(x===y && this.board[x][y].type === "EMPTY") {
+                if((x+y) % sampling_rate === 0 && y % sampling_rate === 0 && this.board[x][y].type === "EMPTY" && sampling_rate !== 1) {
                     this.board[x][y].update("SAMPLE");
                 }
             }
@@ -130,5 +130,5 @@ function set_event_listeners(environment) {
 }
 
 
-environment = new Environment(default_size, "WALL")
+environment = new Environment(default_size, "EMPTY")
 set_event_listeners(environment)
