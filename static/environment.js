@@ -8,11 +8,13 @@ class Cell {
         this.y = y
         this.type = type
         this.colour = Colours[type]
+        this.manual_sample = false
     }
 
-    update(type) {
+    update(type, manual=false) {
         this.type = type
         this.colour = Colours[type]
+        this.manual_sample = manual
     }
 }
 
@@ -93,7 +95,7 @@ class Environment {
         let sampling_rate = parseInt(document.getElementById("sampling_rate").value);
         for(let x=0; x<this.width; x++) {
             for(let y=0; y<this.width; y++) {
-                if(this.board[x][y].type === "SAMPLE") {
+                if(this.board[x][y].type === "SAMPLE" && !this.board[x][y].manual_sample) {
                     this.board[x][y].update("EMPTY");
                 }
                 if((x+y) % sampling_rate === 0 && y % sampling_rate === 0 && this.board[x][y].type === "EMPTY" && sampling_rate !== 1) {
@@ -121,7 +123,7 @@ function set_event_listeners(environment) {
         let y = environment.normalise(e["layerY"], 1);
         update_position(x, y, environment);
         if (drawing) {
-            environment.board[x][y].update(environment.selected_type)
+            environment.board[x][y].update(environment.selected_type, true)
             environment.update_canvas()
         }
     })
