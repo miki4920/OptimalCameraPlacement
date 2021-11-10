@@ -1,6 +1,10 @@
 let default_size = 10;
 let drawing = false;
 
+let socket = io("http://127.0.0.1:5000/");
+
+
+
 
 class Cell {
     constructor(x, y, type) {
@@ -9,12 +13,15 @@ class Cell {
         this.type = type
         this.colour = Colours[type]
         this.manual_sample = false
+        this.camera = null;
     }
 
     update(type, manual=false) {
         this.type = type
         this.colour = Colours[type]
         this.manual_sample = manual
+
+
     }
 }
 
@@ -94,11 +101,11 @@ class Environment {
     sample() {
         let sampling_rate = parseInt(document.getElementById("sampling_rate").value);
         for(let x=0; x<this.width; x++) {
-            for(let y=0; y<this.width; y++) {
+            for(let y=0; y<this.height; y++) {
                 if(this.board[x][y].type === "SAMPLE" && !this.board[x][y].manual_sample) {
                     this.board[x][y].update("EMPTY");
                 }
-                if((x+y) % sampling_rate === 0 && y % sampling_rate === 0 && this.board[x][y].type === "EMPTY" && sampling_rate !== 1) {
+                if((y % sampling_rate === 0 && x% sampling_rate === 0) && this.board[x][y].type === "EMPTY" && sampling_rate !== 1) {
                     this.board[x][y].update("SAMPLE");
                 }
             }
@@ -132,6 +139,10 @@ function set_event_listeners(environment) {
     }
 }
 
-
 environment = new Environment(default_size, "EMPTY")
 set_event_listeners(environment)
+
+function send_environment() {
+    socket.emit("environment", environment.board);
+}
+
