@@ -15,7 +15,7 @@
             <button class="clickable_button" onclick="environment.update_board()">Update</button>
             <label for="sampling_rate"></label>
             <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate" oninput="environment.sample()">
-            <button class="clickable_button" onclick="environment.sample()">Sample</button>
+            <button class="clickable_button" onclick="send_environment()">Place Cameras</button>
         </section>
     </aside>
     <main id="camera_container">
