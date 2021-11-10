@@ -27,9 +27,10 @@ def disconnect():
     del current_users[request.sid]
 
 
-@socket.on("canvas")
-def canvas(message: Dict[str, str]):
-    drawn_canvas = Environment(message.get("dictionary"))
+@socket.on("environment")
+def environment(message: Dict[str, str]):
+    board_environment = Environment(message)
+    print(board_environment.board_types)
 
 
 if __name__ == '__main__':
