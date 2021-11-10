@@ -3,7 +3,12 @@ let drawing = false;
 
 let socket = io("http://127.0.0.1:5000/");
 
-
+class Camera{
+    constructor() {
+        this.effective_range = 5
+        this.field_of_view = 90
+    }
+}
 
 
 class Cell {
@@ -20,8 +25,9 @@ class Cell {
         this.type = type
         this.colour = Colours[type]
         this.manual_sample = manual
-
-
+        if(this.type=== "CAMERA") {
+            this.camera = new Camera()
+        }
     }
 }
 
