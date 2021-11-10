@@ -1,4 +1,4 @@
-from typing import Set, Tuple, Dict, Union, List
+from typing import Tuple, Dict, Union, List
 
 
 class Camera:
@@ -9,8 +9,7 @@ class Camera:
 
 class Node:
     def __init__(self, element):
-        self.x = int(element.get("x"))
-        self.y = int(element.get("y"))
+        self.coordinates = (int(element.get("x")), int(element.get("y")))
         self.node_type = element.get("type")
         self.camera = None if not element.get("camera") else Camera(element.get("camera"))
 
@@ -27,5 +26,5 @@ class Environment:
                 node = Node(element)
                 board_type = board_types.get(node.node_type)
                 board_types[node.node_type] = board_type + [node, ] if board_type else [node, ]
-                board_types[(node.x, node.y)] = node
+                board_types[node.coordinates] = node
         return board_types
