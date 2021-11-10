@@ -6,7 +6,12 @@ import numpy as np
 class Camera:
     def __init__(self, camera):
         self.effective_range = camera.get("effective_range")
-        self.field_of_view = camera.get("field_of_view")
+        self.fov = camera.get("fov")
+
+    def get_fov(self, orientation):
+        angle = self.fov / 2
+        return orientation-angle, orientation+angle
+
 
 
 class Node:

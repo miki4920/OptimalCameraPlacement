@@ -6,7 +6,7 @@ let socket = io("http://127.0.0.1:5000/");
 class Camera{
     constructor() {
         this.effective_range = 5
-        this.field_of_view = 90
+        this.fov = 90
     }
 }
 
