@@ -1,5 +1,7 @@
 from typing import Tuple, Dict, Union, List
 
+import numpy as np
+
 
 class Camera:
     def __init__(self, camera):
@@ -9,7 +11,8 @@ class Camera:
 
 class Node:
     def __init__(self, element):
-        self.coordinates = (int(element.get("x")), int(element.get("y")))
+        self.coordinates = np.array((int(element.get("x")), int(element.get("y"))))
+        self.coordinates_hash = self.coordinates.tobytes()
         self.node_type = element.get("type")
         self.camera = None if not element.get("camera") else Camera(element.get("camera"))
 
@@ -26,5 +29,5 @@ class Environment:
                 node = Node(element)
                 board_type = board_types.get(node.node_type)
                 board_types[node.node_type] = board_type + [node, ] if board_type else [node, ]
-                board_types[node.coordinates] = node
+                board_types[node.coordinates_hash] = node
         return board_types
