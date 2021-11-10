@@ -38,10 +38,12 @@ class Solver:
         if not angle_minimum < angle < angle_maximum:
             return False
 
-
+        # TODO: Handle coordinates with the same x or y coordinates
+        points_between = generate_grid_point(start, end)
+        print(points_between)
 
     def greedy_algorithm(self):
-        print(calculate_angle((0, 0), (0, 0)))
+        print(self.visible(np.array([1, 1]), np.array([1, 5]), self.environment.board["CAMERA"][0].camera, orientation=0))
 
 
 

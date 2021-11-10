@@ -4,6 +4,7 @@ from flask_socketio import SocketIO
 from typing import Dict
 
 from environment import Environment
+from solver import Solver
 from options import options
 
 app = Flask(__name__)
@@ -29,8 +30,9 @@ def disconnect():
 
 @socket.on("environment")
 def environment(message: Dict[str, str]):
-    board_environment = Environment(message)
-    print(board_environment.board_types)
+    board_solver = Solver(Environment(message))
+    # TODO: Return Data back to the browser
+    board_solver.greedy_algorithm()
 
 
 if __name__ == '__main__':
