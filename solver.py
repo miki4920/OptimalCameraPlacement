@@ -12,16 +12,16 @@ def calculate_angle(start, end):
 
 
 def generate_grid_point(start, end):
-    grid_points = np.array([start, end])
-    d0, d1 = np.diff(grid_points, axis=0)[0]
-    if np.abs(d0) > np.abs(d1):
-        return np.c_[np.arange(grid_points[0, 0], grid_points[1, 0] + np.sign(d0), np.sign(d0), dtype=np.int32),
-                     np.arange(grid_points[0, 1] * np.abs(d0) + np.abs(d0) // 2,
-                               grid_points[0, 1] * np.abs(d0) + np.abs(d0) // 2 + (np.abs(d0) + 1) * d1, d1, dtype=np.int32) // np.abs(d0)]
+    ends = np.array([start, end])
+    d0, d1 = np.abs(np.diff(ends, axis=0))[0]
+    if d0 > d1:
+        return np.c_[np.linspace(ends[0, 0], ends[1, 0], d0 + 1, dtype=np.int32),
+                     np.round(np.linspace(ends[0, 1], ends[1, 1], d0 + 1))
+                         .astype(np.int32)]
     else:
-        return np.c_[np.arange(grid_points[0, 0] * np.abs(d1) + np.abs(d1) // 2,
-                               grid_points[0, 0] * np.abs(d1) + np.abs(d1) // 2 + (np.abs(d1) + 1) * d0, d0, dtype=np.int32) // np.abs(d1),
-                     np.arange(grid_points[0, 1], grid_points[1, 1] + np.sign(d1), np.sign(d1), dtype=np.int32)]
+        return np.c_[np.round(np.linspace(ends[0, 0], ends[1, 0], d1 + 1))
+                         .astype(np.int32),
+                     np.linspace(ends[0, 1], ends[1, 1], d1 + 1, dtype=np.int32)]
 
 
 class Solver:
@@ -37,13 +37,10 @@ class Solver:
         angle_minimum, angle_maximum = camera.get_fov(orientation)
         if not angle_minimum < angle < angle_maximum:
             return False
-
-        # TODO: Handle coordinates with the same x or y coordinates
         points_between = generate_grid_point(start, end)
-        print(points_between)
 
     def greedy_algorithm(self):
-        print(self.visible(np.array([1, 1]), np.array([1, 5]), self.environment.board["CAMERA"][0].camera, orientation=0))
+        print(self.visible(np.array([1, 1]), np.array([1, 1]), self.environment.board["CAMERA"][0].camera, orientation=0))
 
 
 
