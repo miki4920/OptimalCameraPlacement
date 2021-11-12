@@ -13,7 +13,6 @@ class Camera:
         return orientation-angle, orientation+angle
 
 
-
 class Node:
     def __init__(self, element):
         self.coordinates = np.array((int(element.get("x")), int(element.get("y"))))
@@ -21,9 +20,15 @@ class Node:
         self.node_type = element.get("type")
         self.camera = None if not element.get("camera") else Camera(element.get("camera"))
 
+    def __eq__(self, other):
+        return np.array_equal(self.coordinates, other.coordinates)
+
+    def get_hashable_coordinates(self):
+        return self.coordinates.tolist()
+
 
 class Environment:
-    def __init__(self, board: Dict[str, str]):
+    def __init__(self, board):
         self.board = self.create_board(board)
 
     @staticmethod
