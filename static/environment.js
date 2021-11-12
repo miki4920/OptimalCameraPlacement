@@ -7,8 +7,9 @@ let socket = io("http://127.0.0.1:5000/");
 class Camera{
     // TODO: Add a way of selecting and adding new cameras
     constructor() {
-        this.effective_range = 5
-        this.fov = 90
+        this.effective_range = 5;
+        this.fov = 90;
+        this.orientation = null;
     }
 }
 
@@ -120,6 +121,17 @@ class Environment {
         }
         this.update_canvas();
     }
+
+    clean_selection() {
+        for(let x=0; x<this.width; x++) {
+            for(let y=0; y<this.height; y++) {
+                if(this.board[x][y].type === "SELECTED") {
+                    this.board[x][y].update("CAMERA");
+                    this.board[x][y].camera.orientation = null;
+                }
+            }
+        }
+    }
 }
 
 function update_position(x, y) {
@@ -151,6 +163,18 @@ environment = new Environment(default_size, "EMPTY")
 set_event_listeners(environment)
 
 function send_environment() {
+    environment.clean_selection();
     socket.emit("environment", environment.board);
 }
+
+socket.on("update_board", (message) => {
+    message = JSON.parse(message)
+    message.forEach((element) => {
+        let x = element[0][0];
+        let y = element[0][1];
+        environment.board[x][y].update("SELECTED");
+        environment.board[x][y].camera.orientation = element[1][0];
+    })
+    environment.update_canvas();
+})
 
