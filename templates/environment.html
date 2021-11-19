@@ -26,8 +26,8 @@
         <section id="options">
             {% for key in options %}
                 <section class="wrapper">
-                    <button class="option" onclick="environment.change_selected_type('{{key}}')" style="background-color: {{options[key]}}">
-                        {{ key }}</button>
+                    <button class="option" onclick="environment.change_selected_type('{{key}}')"
+                            style="background-color:{{options[key]}}; color:{{complementary(options[key])}}">{{ key }}</button>
                 </section>
             {% endfor %}
         </section>
