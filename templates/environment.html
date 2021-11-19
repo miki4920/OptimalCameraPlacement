@@ -7,7 +7,7 @@
 </head>
 <body   >
     <aside>
-        <section>
+        <section id="controls">
             <label for="width">Width</label>
             <input id="width">
             <label for="height">Height</label>
@@ -23,9 +23,12 @@
         <canvas id="camera_canvas" ></canvas>
     </main>
     <aside>
-        <section>
+        <section id="options">
             {% for key in options %}
-                <button onclick="environment.change_selected_type('{{key}}')" style="background-color: {{options[key]}}">{{ key }}</button>
+                <section class="wrapper">
+                    <button class="option" onclick="environment.change_selected_type('{{key}}')" style="background-color: {{options[key]}}">
+                        {{ key }}</button>
+                </section>
             {% endfor %}
         </section>
     </aside>

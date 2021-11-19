@@ -44,7 +44,14 @@ aside {
 
 section {
     display: flex;
+}
+
+#controls {
     flex-direction: column;
+}
+
+#options {
+    flex-wrap: wrap;
 }
 
 label {
@@ -61,12 +68,18 @@ button {
     border: none;
     cursor: pointer;
     flex-grow: 1;
+    background-color: inherit;
 }
 
-.clickable_button {
-    background-color: rgba(255, 255, 255, 0.05);
+.wrapper {
+    flex-basis: 25%;
+    height: 100%;
+    padding: 2px;
+
 }
 
-.clickable_button:hover {
-    background-color: rgba(255, 255, 255, 0.09);
+.option {
+    flex-grow: 1;
+    padding: 4px;
+    border: solid black;
 }
