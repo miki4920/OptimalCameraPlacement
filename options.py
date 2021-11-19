@@ -3,5 +3,5 @@ options = {
     "EMPTY": "white",
     "CAMERA": "green",
     "SAMPLE": "red",
-    "SELECTED": "brown"
+    "SELECTED": "purple"
 }
