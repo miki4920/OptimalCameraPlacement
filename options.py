@@ -4,9 +4,9 @@ import colorsys
 options = {
     "WALL": "rgb(18,18,18)",
     "EMPTY": "rgb(255,255,255)",
-    "CAMERA": "rgb(0,255,0)",
-    "SAMPLE": "rgb(255,0,0)",
-    "SELECTED": "rgb(255,0,255)"
+    "CAMERA": "rgb(127,255,127)",
+    "SAMPLE": "rgb(220,0,0)",
+    "SELECTED": "rgb(255,255,0)"
 }
 
 
