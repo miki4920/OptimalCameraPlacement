@@ -7,9 +7,10 @@ from typing import Dict
 
 from environment import Environment
 from solver import Solver
-from options import options
+from options import options, get_complementary_colour
 
 app = Flask(__name__)
+app.jinja_env.globals.update(complementary=get_complementary_colour)
 socket = SocketIO(app)
 
 
