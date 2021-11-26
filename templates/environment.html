@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../static/environment.css">
+</head>
+<body   >
+    <aside>
+        <section id="controls">
+            <label for="width">Width</label>
+            <input id="width">
+            <label for="height">Height</label>
+            <input id="height">
+            <button class="clickable_button" onclick="environment.update_board()">Update</button>
+            <label for="sampling_rate"></label>
+            <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate" oninput="environment.sample()">
+            <button class="clickable_button" onclick="send_environment()">Place Cameras</button>
+        </section>
+    </aside>
+    <main id="camera_container">
+        <p id="position"></p>
+        <canvas id="camera_canvas" ></canvas>
+    </main>
+    <aside>
+        <section id="options">
+            {% for key in options %}
+                <section class="wrapper">
+                    <button class="option" onclick="environment.change_selected_type('{{key}}')"
+                            style="background-color:{{options[key]}}; color:{{complementary(options[key])}}">{{ key }}</button>
+                </section>
+            {% endfor %}
+        </section>
+    </aside>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+        integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+        crossorigin="anonymous"></script>
+    <script>
+        let Colours = {{ options | tojson | safe }};
+    </script>
+    <script src="/static/environment.js"></script>
+</body>
+</html>

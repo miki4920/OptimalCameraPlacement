@@ -1,0 +1,88 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: rgb(255, 255, 255);
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background-color: rgb(3,9,18);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 50%;
+    flex-grow: 0;
+    flex-shrink: 1;
+}
+
+#position {
+    position: absolute;
+    user-select: none;
+    pointer-events: none;
+    z-index: 100;
+    color: rgb(180, 180, 255);
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+}
+
+aside {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    flex-basis: 25%;
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+section {
+    display: flex;
+}
+
+#controls {
+    flex-direction: column;
+}
+
+#options {
+    flex-wrap: wrap;
+    height: 12.5%;
+}
+
+label {
+    flex-grow: 1;
+}
+
+input {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none;
+    outline: none;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    flex-grow: 1;
+    background-color: inherit;
+}
+
+.wrapper {
+    flex-basis: 25%;
+    width: 100%;
+    height: 100%;
+    padding: 2px;
+
+}
+
+.option {
+    height: 100%;
+    width: 100%;
+    padding: 4px;
+    border: solid black;
+}
