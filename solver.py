@@ -51,7 +51,7 @@ class Solver:
         return valid_orientations
 
     def greedy_algorithm(self):
-        for camera in self.environment.board["CAMERA"]:
+        for camera in self.environment.camera:
             for sample in self.environment.board["SAMPLE"]:
                 orientations = self.visible(camera.coordinates, sample.coordinates, camera.camera)
                 if orientations:
