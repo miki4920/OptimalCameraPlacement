@@ -1,15 +1,13 @@
 let default_size = 10;
 let drawing = false;
 
-// TODO: Make url dynamic
 let socket = io("http://127.0.0.1:5000/");
 
 class Camera{
-    // TODO: Add a way of selecting and adding new cameras
-    constructor() {
-        this.effective_range = 5;
-        this.fov = 90;
-        this.orientation = null;
+    constructor(camera) {
+        this.effective_range = camera["effective_range"];
+        this.fov = camera["fov"]
+        this.orientation = camera["orientation"];
     }
 }
 
@@ -24,12 +22,12 @@ class Cell {
         this.camera = null;
     }
 
-    update(type, manual=false) {
+    update(type, manual=false, camera=null) {
         this.type = type
         this.colour = Colours[type]
         this.manual_sample = manual
-        if(this.type=== "CAMERA") {
-            this.camera = new Camera()
+        if(camera) {
+            this.camera = new Camera(camera);
         }
     }
 }
@@ -39,6 +37,7 @@ class Environment {
     constructor(size, default_type) {
         this.canvas = document.getElementById("camera_canvas");
         this.board = [];
+        this.cameras = [];
         this.width = size
         this.height = size
         this.default_type = default_type;
@@ -172,8 +171,8 @@ socket.on("update_board", (message) => {
     message.forEach((element) => {
         let x = element[0][0];
         let y = element[0][1];
-        environment.board[x][y].update("SELECTED");
-        environment.board[x][y].camera.orientation = element[1][0];
+        environment.board[x][y].update("SELECTED", environment.board[x][y].camera);
+
     })
     environment.update_canvas();
 })

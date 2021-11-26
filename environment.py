@@ -4,13 +4,14 @@ import numpy as np
 
 
 class Camera:
-    def __init__(self, camera):
-        self.effective_range = camera.get("effective_range")
-        self.fov = camera.get("fov")
+    def __init__(self, effective_range, fov, orientation):
+        self.effective_range = effective_range
+        self.fov = fov
+        self.orientation = orientation
 
-    def get_fov(self, orientation):
+    def get_fov(self):
         angle = self.fov / 2
-        return orientation-angle, orientation+angle
+        return self.orientation-angle, self.orientation+angle
 
 
 class Node:
@@ -18,7 +19,7 @@ class Node:
         self.coordinates = np.array((int(element.get("x")), int(element.get("y"))))
         self.coordinates_hash = self.coordinates.tobytes()
         self.node_type = element.get("type")
-        self.camera = None if not element.get("camera") else Camera(element.get("camera"))
+        self.camera = None
 
     def __eq__(self, other):
         return np.array_equal(self.coordinates, other.coordinates)
@@ -28,8 +29,9 @@ class Node:
 
 
 class Environment:
-    def __init__(self, board):
+    def __init__(self, board, cameras):
         self.board = self.create_board(board)
+        self.cameras = cameras
 
     @staticmethod
     def create_board(board: Dict[str, str]) -> Union[Dict[Tuple[int, int], Node], Dict[str, List[Node]]]:
