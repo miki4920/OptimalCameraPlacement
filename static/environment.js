@@ -37,7 +37,8 @@ class Environment {
     constructor(size, default_type) {
         this.canvas = document.getElementById("camera_canvas");
         this.board = [];
-        this.cameras = [];
+        this.cameras = [{"effective_range": 5,
+        "fov": 90}];
         this.width = size
         this.height = size
         this.default_type = default_type;
@@ -163,7 +164,7 @@ set_event_listeners(environment)
 
 function send_environment() {
     environment.clean_selection();
-    socket.emit("environment", environment.board);
+    socket.emit("environment", {"board": environment.board, "cameras": environment.cameras});
 }
 
 socket.on("update_board", (message) => {

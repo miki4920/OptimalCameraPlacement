@@ -21,7 +21,7 @@ def index():
 
 @socket.on("environment")
 def environment(message: Dict[str, str]):
-    board_solver = Solver(Environment(message))
+    board_solver = Solver(Environment(message.get("board"), message.get("cameras")))
     solution = board_solver.greedy_algorithm()
     emit("update_board", json.dumps(solution), to=request.sid)
 
