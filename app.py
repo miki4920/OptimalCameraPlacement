@@ -5,7 +5,6 @@ from flask_socketio import SocketIO, emit
 
 from typing import Dict
 
-from environment import Environment
 from solver import Solver
 from options import options, get_complementary_colour
 
@@ -21,8 +20,9 @@ def index():
 
 @socket.on("environment")
 def environment(message: Dict[str, str]):
-    board_solver = Solver(Environment(message.get("board"), message.get("cameras")))
+    board_solver = Solver(message.get("board"), message.get("cameras"))
     solution = board_solver.greedy_algorithm()
+    solution = solution if solution else []
     emit("update_board", json.dumps(solution), to=request.sid)
 
 
