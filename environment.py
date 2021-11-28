@@ -3,17 +3,6 @@ from typing import Tuple, Dict, Union, List
 import numpy as np
 
 
-class Camera:
-    def __init__(self, effective_range, fov, orientation):
-        self.effective_range = effective_range
-        self.fov = fov
-        self.orientation = orientation
-
-    def get_fov(self):
-        angle = self.fov / 2
-        return self.orientation-angle, self.orientation+angle
-
-
 class Node:
     def __init__(self, element):
         self.coordinates = np.array((int(element.get("x")), int(element.get("y"))))
