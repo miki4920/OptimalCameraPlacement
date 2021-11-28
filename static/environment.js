@@ -5,7 +5,7 @@ let socket = io("http://127.0.0.1:5000/");
 
 class Camera{
     constructor(camera) {
-        this.effective_range = camera["effective_range"];
+        this.range = camera["range"];
         this.fov = camera["fov"]
         this.orientation = camera["orientation"];
     }
@@ -37,7 +37,7 @@ class Environment {
     constructor(size, default_type) {
         this.canvas = document.getElementById("camera_canvas");
         this.board = [];
-        this.cameras = [{"effective_range": 5,
+        this.cameras = [{"range": 5,
         "fov": 90}];
         this.width = size
         this.height = size
