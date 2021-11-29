@@ -29,6 +29,9 @@ class Cell {
         if(camera) {
             this.camera = new Camera(camera);
         }
+        else {
+            this.camera = null;
+        }
     }
 }
 
@@ -127,7 +130,6 @@ class Environment {
             for(let y=0; y<this.height; y++) {
                 if(this.board[x][y].type === "SELECTED") {
                     this.board[x][y].update("CAMERA");
-                    this.board[x][y].camera.orientation = null;
                 }
             }
         }
@@ -170,9 +172,9 @@ function send_environment() {
 socket.on("update_board", (message) => {
     message = JSON.parse(message)
     message.forEach((element) => {
-        let x = element[0][0];
-        let y = element[0][1];
-        environment.board[x][y].update("SELECTED", environment.board[x][y].camera);
+        let x = element["camera_position"][0];
+        let y = element["camera_position"][1];
+        environment.board[x][y].update("SELECTED", element["camera"]);
 
     })
     environment.update_canvas();
