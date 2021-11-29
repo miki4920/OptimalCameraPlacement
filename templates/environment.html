@@ -8,16 +8,18 @@
 <body>
     <aside>
         <button class="collapsible">Canvas</button>
-        <section>
-            <label for="width">Width</label>
-            <input id="width" autocomplete="off">
-            <label for="height">Height</label>
-            <input id="height" autocomplete="off">
-            <button onclick="environment.update_board()">Update</button>
-            <label for="sampling_rate"></label>
-            <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate" oninput="environment.sample()">
-            <button onclick="send_environment()">Place Cameras</button>
-        </section>
+        <div class="wrapper">
+            <section>
+                <label for="width">Width</label>
+                <input id="width" autocomplete="off">
+                <label for="height">Height</label>
+                <input id="height" autocomplete="off">
+                <button onclick="environment.update_board()" class="execute">Create New Canvas</button>
+                <label for="sampling_rate"></label>
+                <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate" oninput="environment.sample()">
+                <button onclick="send_environment()" class="execute">Place Cameras</button>
+            </section>
+        </div>
     </aside>
     <main id="camera_container">
         <p id="position"></p>
@@ -25,12 +27,14 @@
     </main>
     <aside>
         <button class="collapsible">Elements</button>
-        <section>
-            {% for key in options %}
-                    <button class="option" value = '{{ key }}' onclick="environment.change_selected_type(this)"
-                            style="background-color:{{options[key]}}; color:{{complementary(options[key], 'rgb(255, 255, 255)')}}">{{ key }}</button>
-            {% endfor %}
-        </section>
+        <div class="wrapper">
+            <section>
+                {% for key in options %}
+                        <button class="option" value = '{{ key }}' onclick="environment.change_selected_type(this)"
+                                style="background-color:{{options[key]}}; color:{{complementary(options[key], 'rgb(255, 255, 255)')}}">{{ key }}</button>
+                {% endfor %}
+            </section>
+        </div>
     </aside>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
         integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
