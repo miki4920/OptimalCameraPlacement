@@ -95,7 +95,12 @@ class Environment {
     }
 
     change_selected_type(type) {
-        this.selected_type = type
+        let elements = Array.from(document.getElementsByClassName("active_option"))
+        elements.forEach((element) => {
+            element.classList.remove("active_option")
+        })
+        type.classList.add("active_option");
+        this.selected_type = type.value
     }
 
     normalise(value, index) {
