@@ -7,14 +7,12 @@ import numpy as np
 class Node:
     def __init__(self, element):
         self.coordinates = np.array((int(element.get("x")), int(element.get("y"))))
+        self.coordinates_list = self.coordinates.tolist()
         self.coordinates_hash = self.coordinates.tobytes()
         self.node_type = element.get("type")
 
     def __eq__(self, other):
         return np.array_equal(self.coordinates, other.coordinates)
-
-    def get_hashable_coordinates(self):
-        return self.coordinates.tolist()
 
 
 def create_board(board: Dict[str, str]) -> Union[Dict[Tuple[int, int], Node], Dict[str, List[Node]]]:
