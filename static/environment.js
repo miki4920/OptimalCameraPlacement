@@ -116,7 +116,8 @@ class Environment {
     }
 
     sample() {
-        let sampling_rate = parseInt(document.getElementById("sampling_rate").value);
+        let sampling = document.getElementById("sampling_rate");
+        let sampling_rate = parseInt(sampling.value);
         for(let x=0; x<this.width; x++) {
             for(let y=0; y<this.height; y++) {
                 if(this.board[x][y].type === "SAMPLE" && !this.board[x][y].manual_sample) {

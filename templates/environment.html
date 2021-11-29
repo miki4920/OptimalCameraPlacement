@@ -15,7 +15,12 @@
                 <label for="height">Height</label>
                 <input id="height" autocomplete="off">
                 <button onclick="environment.update_board()" class="execute">Create New Canvas</button>
-                <label for="sampling_rate"></label>
+            </section>
+        </div>
+        <button class="collapsible">Sampling & Solver</button>
+        <div class="wrapper">
+            <section>
+                <label for="sampling_rate">Sampling Rate: </label>
                 <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate" oninput="environment.sample()">
                 <button onclick="send_environment()" class="execute">Place Cameras</button>
             </section>
