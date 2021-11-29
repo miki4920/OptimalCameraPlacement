@@ -8,7 +8,7 @@
 <body>
     <aside>
         <button class="collapsible">Canvas</button>
-        <section id="controls">
+        <section>
             <label for="width">Width</label>
             <input id="width">
             <label for="height">Height</label>
@@ -25,7 +25,7 @@
     </main>
     <aside>
         <button class="collapsible">Elements</button>
-        <section id="options">
+        <section>
             {% for key in options %}
                     <button class="option" value = '{{ key }}' onclick="environment.change_selected_type(this)"
                             style="background-color:{{options[key]}}; color:{{complementary(options[key], 'rgb(255, 255, 255)')}}">{{ key }}</button>
