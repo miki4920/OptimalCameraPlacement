@@ -2,11 +2,11 @@ import colorsys
 
 
 options = {
-    "WALL": "rgb(31,40,51)",
     "EMPTY": "rgb(197,198,199)",
-    "CAMERA": "rgb(127,255,127)",
+    "WALL": "rgb(31,40,51)",
+    "CAMERA": "rgb(100,112,125)",
     "SAMPLE": "rgb(220,0,0)",
-    "SELECTED": "rgb(255,255,0)"
+    "SELECTED": "rgb(128,169,181)"
 }
 
 
@@ -16,8 +16,7 @@ def get_complementary_colour(base, colour):
     base_hsl = base_hsl.split(",")
     base_hsl = list(map(int, base_hsl))
     base_hsl = list(colorsys.rgb_to_hls(*base_hsl))
-    print(base_hsl[1])
-    if base_hsl[1] > 100:
+    if base_hsl[1] > 180:
         colour = colour[3:]
         colour = colour.strip("()")
         colour = colour.split(",")
