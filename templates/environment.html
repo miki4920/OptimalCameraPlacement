@@ -10,9 +10,9 @@
         <button class="collapsible">Canvas</button>
         <section>
             <label for="width">Width</label>
-            <input id="width">
+            <input id="width" autocomplete="off">
             <label for="height">Height</label>
-            <input id="height">
+            <input id="height" autocomplete="off">
             <button onclick="environment.update_board()">Update</button>
             <label for="sampling_rate"></label>
             <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate" oninput="environment.sample()">
