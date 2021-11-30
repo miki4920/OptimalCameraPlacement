@@ -45,9 +45,10 @@ class Evaluator:
     def check_angle(self, start, end, fov, orientations):
         valid_orientations = []
         angle = self.calculate_angle(start, end)
+
         for orientation in orientations:
             angle_minimum, angle_maximum = orientation - fov, orientation + fov
-            if angle_minimum <= angle < angle_maximum:
+            if angle_minimum <= angle <= angle_maximum:
                 valid_orientations.append(orientation)
         return valid_orientations
 
@@ -71,7 +72,7 @@ class Evaluator:
         collision_constrain = self.check_collision(start, end)
         if not collision_constrain:
             return []
-        angle_constrain = self.check_angle(start, end, float(camera["fov"]), orientations)
+        angle_constrain = self.check_angle(start, end, float(camera["fov"])/2, orientations)
         if not angle_constrain:
             return []
         return angle_constrain
