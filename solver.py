@@ -48,6 +48,7 @@ class Solver:
             scores = self.get_maximum_values(scores)
             selected_camera = choice(scores)
             observed_nodes = observed_nodes.union(selected_camera["nodes"])
-            selected_camera["nodes"] = [self.evaluator[element].coordinates_list for element in selected_camera["nodes"]]
+            selected_camera["camera"]["nodes"] = sorted([self.evaluator[element].coordinates_list for element in selected_camera["nodes"]])
+            del selected_camera["nodes"]
             cameras.append(selected_camera)
         return cameras
