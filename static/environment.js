@@ -7,7 +7,8 @@ class Camera{
     constructor(camera) {
         this.range = camera["range"];
         this.fov = camera["fov"]
-        this.orientation = camera["orientation"];
+        this.orientation = camera["orientation"]
+        this.nodes = camera["nodes"].map(a => "(" + a.join(", ") + ")").join("; ");
     }
 }
 
@@ -103,8 +104,18 @@ class Environment {
         this.selected_type = type.value
     }
 
-    normalise(value, index) {
+    normalise(value, index, type) {
         let result = Math.floor(value / this.pixel_resolution[index]);
+        if(type === "x") {
+            if(result > this.width-1) {
+                return this.width-1
+            }
+        }
+        else if(type === "y") {
+            if(result > this.height-1) {
+                return this.height-1
+            }
+        }
         return result > 0 ? result : 0; 
     }
 
@@ -142,8 +153,29 @@ class Environment {
     }
 }
 
-function update_position(x, y) {
-    document.getElementById("position").innerText = "X: " + x+ ", Y: " + y
+function update_information(node) {
+    document.getElementById("coordinates").innerText = "X: " + node.x+ ", Y: " + node.y
+    document.getElementById("type").innerText = "Type: " + node.type
+    let range = document.getElementById("range")
+    let fov = document.getElementById("fov")
+    let orientation = document.getElementById("orientation")
+    let nodes = document.getElementById("nodes")
+    if (node.camera) {
+        range.innerText = "Camera Range: " + node.camera.range
+        fov.innerText = "Camera FoV: " + node.camera.fov
+        orientation.innerText = "Camera Orientation: " + node.camera.orientation
+        nodes.innerText = "Camera's Vision: " + node.camera.nodes
+    }
+    else {
+        range.innerText = ""
+        fov.innerText = ""
+        orientation.innerText = ""
+        nodes.innerText = ""
+    }
+    let wrapper = document.getElementById("information")
+    if(wrapper.style.maxHeight) {
+        wrapper.style.maxHeight = wrapper.scrollHeight + "px";
+    }
 }
 
 function set_event_listeners(environment) {
@@ -154,9 +186,9 @@ function set_event_listeners(environment) {
         drawing = false
     })
     environment.canvas.addEventListener("mousemove", function (e) {
-        let x = environment.normalise(e["layerX"], 0);
-        let y = environment.normalise(e["layerY"], 1);
-        update_position(x, y, environment);
+        let x = environment.normalise(e["layerX"], 0, "x");
+        let y = environment.normalise(e["layerY"], 1, "y");
+        update_information(environment.board[x][y]);
         if (drawing) {
             environment.board[x][y].update(environment.selected_type, true)
             environment.update_canvas()
@@ -180,7 +212,7 @@ socket.on("update_board", (message) => {
     message.forEach((element) => {
         let x = element["camera_position"][0];
         let y = element["camera_position"][1];
-        environment.board[x][y].update("SELECTED", element["camera"]);
+        environment.board[x][y].update("SELECTED", false, element["camera"]);
 
     })
     environment.update_canvas();

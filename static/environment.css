@@ -91,6 +91,20 @@ section {
     border: solid #45A29E 4px;
 }
 
+p {
+    flex-basis: 100%;
+    flex-grow: 1;
+    font-size: 1.06em;
+    margin: 4px 0 4px 0;
+}
+
+output {
+    flex-basis: 100%;
+    flex-grow: 1;
+    font-size: 1.06em;
+    margin: 4px 0 4px 0;
+}
+
 label {
     flex-basis: 50%;
     flex-grow: 1;
