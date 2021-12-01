@@ -57,7 +57,7 @@ section {
 
 .collapsible {
     font-size: 1.09em;
-    padding: 20px 0;
+    padding: 24px 0;
     border:solid #45A29E 4px;
     background-color: #0B0C10;
 }
@@ -72,7 +72,7 @@ section {
 
 .option {
     flex-basis: 100%;
-    padding: 20px 0;
+    padding: 16px 0;
     margin: 2px 0;
     text-align: center;
     border: solid #0B0C10 4px;
