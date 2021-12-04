@@ -41,7 +41,7 @@ class Environment {
     constructor(size, default_type) {
         this.canvas = document.getElementById("camera_canvas");
         this.board = [];
-        this.cameras = [{"range": 5,
+        this.cameras = [{"range": 4,
         "fov": 90}];
         this.width = size
         this.height = size
@@ -53,7 +53,9 @@ class Environment {
 
     update_board() {
         this.width = document.getElementById("width").value
+        this.width = this.width ? this.width : 10
         this.height = document.getElementById("height").value
+        this.height = this.height ? this.height : 10
         this.create_board(this.default_type)
     }
 
