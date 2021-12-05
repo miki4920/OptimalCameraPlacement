@@ -15,7 +15,7 @@ class HillClimbing(Solver):
                 return solution_list[0:i]
         return solution_list
 
-    def greedy_algorithm(self):
+    def solve(self):
         observed_nodes = set()
         cameras = []
         for n in range(0, self.number_of_cameras):
