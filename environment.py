@@ -10,6 +10,7 @@ class Node:
         self.coordinates_list = self.coordinates.tolist()
         self.coordinates_hash = self.coordinates.tobytes()
         self.node_type = element.get("type")
+        self.seen_by = set()
 
     def __eq__(self, other):
         return np.array_equal(self.coordinates, other.coordinates)
