@@ -21,8 +21,9 @@ def create_board(board: Dict[str, str]) -> Union[Dict[Tuple[int, int], Node], Di
     for x, row in enumerate(board):
         for y, element in enumerate(row):
             node = Node(element)
-            board_type = board_types.get(node.node_type)
-            board_types[node.node_type] = board_type + [node, ] if board_type else [node, ]
+            if not board_types.get(node.node_type):
+                board_types[node.node_type] = set()
+            board_types[node.node_type].add(node.coordinates_hash)
             board_types[node.coordinates_hash] = node
     return board_types
 
@@ -33,6 +34,9 @@ class Evaluator:
 
     def __getitem__(self, item):
         return self.board[item]
+
+    def __setitem__(self, item, value):
+        self.board[item] = value
 
     @staticmethod
     def check_range(start, end, effective_range):
@@ -49,8 +53,6 @@ class Evaluator:
         angle = self.calculate_angle(start, end)
         for orientation in orientations:
             angle_minimum, angle_maximum = orientation - fov, orientation + fov
-            angle_minimum = angle_minimum if angle_minimum < 180 else angle_minimum - 360
-            angle_maximum = angle_maximum if angle_minimum < 180 else angle_maximum - 360
             if angle_minimum <= angle <= angle_maximum:
                 valid_orientations.append(orientation)
         return valid_orientations

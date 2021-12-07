@@ -6,7 +6,6 @@ from flask_socketio import SocketIO, emit
 from typing import Dict
 
 from algorithms.hill_climbing import HillClimbing
-from algorithms.solver import Solver
 from options import options, get_complementary_colour
 
 app = Flask(__name__)

@@ -17,5 +17,12 @@ class HillClimbing(Solver):
 
     def solve(self):
         cameras = []
-        self.evaluate_cameras()
+        scores = self.evaluate_cameras()
+        while scores and len(cameras) < self.number_of_cameras:
+            camera = choice(self.get_maximum_values(scores))
+            cameras.append(camera)
+            self.evaluate_samples(camera["camera"]["nodes"])
+            scores = self.evaluate_cameras()
+        cameras = self.serialize_to_json(cameras)
+        return cameras
 

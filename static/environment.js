@@ -214,7 +214,7 @@ socket.on("update_board", (message) => {
     message.forEach((element) => {
         let x = element["camera_position"][0];
         let y = element["camera_position"][1];
-        environment.board[x][y].update("SELECTED", false, element["camera"]);
+        environment.board[x][y].update("SELECTED", false, element);
 
     })
     environment.update_canvas();
