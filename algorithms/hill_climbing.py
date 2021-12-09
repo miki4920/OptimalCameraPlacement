@@ -21,12 +21,12 @@ class HillClimbing(Solver):
         coverage = len(self.evaluator["SAMPLE"])
         while scores:
             camera = choice(self.get_maximum_values(scores))
-            if camera["score"] < self.minimum_score:
+            if camera["score"] < coverage*self.minimum_coverage:
                 break
             cameras.append(camera)
             self.evaluate_samples(camera["camera"]["nodes"])
             scores = self.evaluate_cameras()
         cameras = self.serialize_to_json(cameras)
-        coverage = (1 - (len(self.evaluator["SAMPLE"])/coverage))*100
+        coverage = round((1 - (len(self.evaluator["SAMPLE"])/coverage))*100, 2)
         return cameras, coverage
 
