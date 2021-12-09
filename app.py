@@ -21,7 +21,8 @@ def index():
 @socket.on("environment")
 def environment(message: Dict[str, str]):
     board_solver = HillClimbing(message.get("board"), message.get("cameras"))
-    solution = board_solver.solve()
+    solution, coverage = board_solver.solve()
+    print(coverage)
     solution = solution if solution else []
     emit("update_board", json.dumps(solution), to=request.sid)
 

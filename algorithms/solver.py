@@ -8,7 +8,7 @@ class Solver:
         self.cameras = cameras
         self.evaluator = Evaluator(board)
         self.orientations = (0, 90, 180, 270)
-        self.number_of_cameras = 4
+        self.minimum_score = 5
 
     @staticmethod
     def create_element(camera, position, orientation):
@@ -47,6 +47,6 @@ class Solver:
     def serialize_to_json(self, cameras):
         serialized_cameras = []
         for camera in cameras:
-            camera["camera"]["nodes"] = [self.evaluator[node].coordinates_list for node in camera["camera"]["nodes"]]
+            camera["camera"]["nodes"] = sorted([self.evaluator[node].coordinates_list for node in camera["camera"]["nodes"]])
             serialized_cameras.append(camera["camera"])
         return serialized_cameras
