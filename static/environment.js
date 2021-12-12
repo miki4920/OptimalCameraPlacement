@@ -219,6 +219,7 @@ socket.on("update_board", (message) => {
         environment.board[x][y].update("SELECTED", false, element);
     })
     environment.update_canvas();
-    document.getElementById("score").innerHTML = "Average Coverage per Camera: " + message["coverage"] + " %"
+    document.getElementById("coverage").innerHTML = "Total Coverage: " + message["coverage"]*solution.length + " %"
+    document.getElementById("coverage_per_camera").innerHTML = "Average Coverage per Camera: " + message["coverage"] + " %"
 })
 
