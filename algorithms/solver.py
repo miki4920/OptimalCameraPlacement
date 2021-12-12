@@ -8,7 +8,6 @@ class Solver:
         self.cameras = cameras
         self.evaluator = Evaluator(board)
         self.orientations = (0, 90, 180, 270)
-        self.minimum_coverage = 0.1
 
     @staticmethod
     def create_element(camera, position, orientation):

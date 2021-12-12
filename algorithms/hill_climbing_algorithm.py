@@ -5,6 +5,7 @@ from algorithms.solver import Solver
 
 class HillClimbingAlgorithm(Solver):
     def __init__(self, board, cameras):
+        self.minimum_score = 1
         super().__init__(board, cameras)
 
     def evaluate_cameras(self):
@@ -40,7 +41,7 @@ class HillClimbingAlgorithm(Solver):
         coverage = len(self.evaluator["SAMPLE"])
         while scores:
             camera = choice(self.get_maximum_values(scores))
-            if camera["score"] < coverage*self.minimum_coverage:
+            if camera["score"] <= self.minimum_score:
                 break
             cameras.append(camera)
             self.evaluate_samples(camera["camera"]["nodes"])
