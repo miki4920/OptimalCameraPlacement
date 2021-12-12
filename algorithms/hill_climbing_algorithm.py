@@ -3,7 +3,7 @@ from random import choice
 from algorithms.solver import Solver
 
 
-class HillClimbing(Solver):
+class HillClimbingAlgorithm(Solver):
     def __init__(self, board, cameras):
         super().__init__(board, cameras)
 

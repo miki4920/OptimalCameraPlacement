@@ -5,7 +5,8 @@ from flask_socketio import SocketIO, emit
 
 from typing import Dict
 
-from algorithms.hill_climbing import HillClimbing
+from algorithms.genetic_algorithm import GeneticAlgorithm
+from algorithms.hill_climbing_algorithm import HillClimbingAlgorithm
 from options import options, get_complementary_colour
 
 app = Flask(__name__)
@@ -20,9 +21,15 @@ def index():
 
 @socket.on("environment")
 def environment(message: Dict[str, str]):
-    board_solver = HillClimbing(message.get("board"), message.get("cameras"))
-    solution, coverage = board_solver.solve()
-    print(coverage)
+    algorithm = message.get("algorithm")
+    board, cameras = message.get("board"), message.get("cameras")
+    if algorithm == "hill_climbing_algorithm":
+        solver = HillClimbingAlgorithm(board, cameras)
+    elif algorithm == "genetic_algorithm":
+        solver = GeneticAlgorithm(board, cameras)
+    else:
+        return
+    solution, coverage = solver.solve()
     solution = solution if solution else []
     emit("update_board", json.dumps(solution), to=request.sid)
 
