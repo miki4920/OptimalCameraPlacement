@@ -7,6 +7,25 @@ class HillClimbing(Solver):
     def __init__(self, board, cameras):
         super().__init__(board, cameras)
 
+    def evaluate_cameras(self):
+        scores = {}
+        for sample in self.evaluator["SAMPLE"]:
+            sample = self.evaluator[sample]
+            sample.seen_by = set()
+            for camera in self.cameras:
+                for camera_node in self.evaluator["CAMERA"]:
+                    camera_node = self.evaluator[camera_node]
+                    for orientation in self.evaluator.visible(camera_node.coordinates, sample.coordinates,
+                                                              camera, self.orientations):
+                        key_tuple = (camera_node.coordinates_hash, orientation)
+                        sample.seen_by.add(key_tuple)
+                        if not scores.get(key_tuple):
+                            scores[key_tuple] = self.create_element(camera, camera_node.coordinates_list, orientation)
+                        scores[key_tuple]["score"] += 1
+                        scores[key_tuple]["camera"]["nodes"].add(sample.coordinates_hash)
+        scores = sorted(scores.values(), key=lambda item: item["score"], reverse=True)
+        return scores
+
     @staticmethod
     def get_maximum_values(solution_list):
         highest_score = solution_list[0]["score"]
@@ -28,5 +47,4 @@ class HillClimbing(Solver):
             scores = self.evaluate_cameras()
         cameras = self.serialize_to_json(cameras)
         coverage = round((1 - (len(self.evaluator["SAMPLE"])/coverage))*100, 2)
-        return cameras, coverage
-
+        return cameras, coverage/len(cameras)
