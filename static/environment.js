@@ -1,4 +1,4 @@
-let default_size = 10;
+let default_size = 11;
 let drawing = false;
 
 let socket = io("http://127.0.0.1:5000/");
@@ -206,7 +206,8 @@ set_event_listeners(environment)
 
 function send_environment() {
     environment.clean_selection();
-    socket.emit("environment", {"board": environment.board, "cameras": environment.cameras});
+    let algorithm = document.getElementById("algorithm").value;
+    socket.emit("environment", {"board": environment.board, "cameras": environment.cameras, "algorithm": algorithm});
 }
 
 socket.on("update_board", (message) => {

@@ -34,6 +34,11 @@
             <section>
                 <label for="sampling_rate">Sampling Rate: </label>
                 <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate" oninput="environment.sample()">
+                <label for="algorithm">Algorithm Selection: </label>
+                <select name="algorithm" id="algorithm">
+                    <option value="hill_climbing_algorithm">Hill Climbing Algorithm</option>
+                    <option value="genetic_algorithm">Genetic Algorithm</option>
+                </select>
                 <button onclick="send_environment()" class="execute">Place Cameras</button>
             </section>
         </div>
