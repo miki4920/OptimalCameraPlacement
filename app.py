@@ -22,7 +22,8 @@ def index():
 @socket.on("environment")
 def environment(message: Dict[str, str]):
     algorithm = message.get("algorithm")
-    board, cameras = message.get("board"), message.get("cameras")
+    board = message.get("board")
+    cameras = message.get("cameras")
     if algorithm == "hill_climbing_algorithm":
         solver = HillClimbingAlgorithm(board, cameras)
     elif algorithm == "genetic_algorithm":
@@ -30,8 +31,9 @@ def environment(message: Dict[str, str]):
     else:
         return
     solution, coverage = solver.solve()
-    solution = solution if solution else []
-    emit("update_board", json.dumps(solution), to=request.sid)
+    solution = solution if solution else {}
+    data = {"solution": solution, "coverage": round(coverage, 2)}
+    emit("update_board", json.dumps(data), to=request.sid)
 
 
 if __name__ == '__main__':

@@ -212,12 +212,13 @@ function send_environment() {
 
 socket.on("update_board", (message) => {
     message = JSON.parse(message)
-    message.forEach((element) => {
+    let solution = message["solution"]
+    solution.forEach((element) => {
         let x = element["camera_position"][0];
         let y = element["camera_position"][1];
         environment.board[x][y].update("SELECTED", false, element);
-
     })
     environment.update_canvas();
+    document.getElementById("score").innerHTML = "Average Coverage per Camera: " + message["coverage"] + " %"
 })
 
