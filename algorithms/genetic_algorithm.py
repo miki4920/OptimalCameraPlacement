@@ -21,10 +21,11 @@ class Parent:
 class GeneticAlgorithm(Solver):
     def __init__(self, board, cameras):
         self.valid_cameras = {}
-        self.population = 40
-        self.generations = 50
+        self.population = 50
+        self.generations = 100
         self.k = 2
         self.crossover_probability = 0.7
+        self.mutation_probability = 0.01
         super().__init__(board, cameras)
 
     def evaluate_cameras(self):
@@ -86,7 +87,12 @@ class GeneticAlgorithm(Solver):
         return child_one, child_two
 
     def mutate(self, child):
-        pass
+        for i in range(0, len(child.genotype)):
+            if random() <= self.mutation_probability:
+                if random() <= 0.5:
+                    child.genotype[i] = choice(list(self.valid_cameras.values())[i])
+                else:
+                    child.genotype[i] = None
 
     def solve(self):
         self.evaluate_cameras()
@@ -98,6 +104,8 @@ class GeneticAlgorithm(Solver):
                 parent_one = self.tournament_selection(parents)
                 parent_two = self.tournament_selection(parents)
                 child_one, child_two = self.crossover(parent_one, parent_two)
+                self.mutate(child_one)
+                self.mutate(child_two)
                 children.extend([child_one, child_two])
             parents = children
             [self.evaluate_parent(parent) for parent in parents]
