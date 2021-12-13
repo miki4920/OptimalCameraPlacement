@@ -6,7 +6,8 @@ from algorithms.solver import Solver
 class Parent:
     def __init__(self, genotype):
         self.genotype = genotype
-        self.score = 0
+        self.score = (999999, 999999)
+        self.nodes = []
 
     def __len__(self):
         return len(self.genotype)
@@ -21,11 +22,11 @@ class Parent:
 class GeneticAlgorithm(Solver):
     def __init__(self, board, cameras):
         self.valid_cameras = {}
-        self.population = 50
+        self.population = 30
         self.generations = 100
-        self.k = 2
-        self.crossover_probability = 0.7
-        self.mutation_probability = 0.01
+        self.k = 4
+        self.crossover_probability = 0.75
+        self.mutation_probability = 0.05
         super().__init__(board, cameras)
 
     def evaluate_cameras(self):
@@ -66,15 +67,15 @@ class GeneticAlgorithm(Solver):
                     if camera_tuple in sample.seen_by:
                         seen_samples.add(sample.coordinates_hash)
         if count > 0:
-            parent.score = (len(self.evaluator["SAMPLE"]) - len(seen_samples))+count
+            parent.score = ((len(self.evaluator["SAMPLE"]) - len(seen_samples)), count)
         else:
-            parent.score = 0
+            parent.score = (999999, 999999)
 
     def tournament_selection(self, parents):
         tournament_population = []
         for i in range(0, self.k):
             tournament_population.append(choice(parents))
-        return min(tournament_population, key=lambda parent: parent.score)
+        return min(tournament_population, key=lambda parent: sum(parent.score))
 
     def crossover(self, parent_one, parent_two):
         if random() > self.crossover_probability:
@@ -94,13 +95,33 @@ class GeneticAlgorithm(Solver):
                 else:
                     child.genotype[i] = None
 
+    def get_camera_dictionary(self, index, orientation):
+        camera = list(self.valid_cameras.keys())[index]
+        nodes = []
+        for sample in self.evaluator["SAMPLE"]:
+            sample = self.evaluator[sample]
+            if (camera, orientation) in sample.seen_by:
+                nodes.append(sample.coordinates_list)
+        camera = self.evaluator[camera].coordinates_list
+        camera_dictionary = {"range": 4, "fov": 90, "orientation": orientation, "camera_position": camera, "nodes": nodes}
+        return camera_dictionary
+
+    def serialise_to_json(self, parent):
+        cameras = []
+        coverage = 1-(parent.score[0]/len(self.evaluator["SAMPLE"]))
+        coverage = round((coverage*100)/parent.score[1], 2)
+        for i, camera in enumerate(parent.genotype):
+            if camera:
+                cameras.append(self.get_camera_dictionary(i, camera))
+        return cameras, coverage
+
     def solve(self):
         self.evaluate_cameras()
         parents = self.initialise_population()
         [self.evaluate_parent(parent) for parent in parents]
         for i in range(0, self.generations):
             children = []
-            while len(children) != self.population:
+            while len(children) < self.population:
                 parent_one = self.tournament_selection(parents)
                 parent_two = self.tournament_selection(parents)
                 child_one, child_two = self.crossover(parent_one, parent_two)
@@ -109,8 +130,10 @@ class GeneticAlgorithm(Solver):
                 children.extend([child_one, child_two])
             parents = children
             [self.evaluate_parent(parent) for parent in parents]
-        parents = sorted(parents, key=lambda parent: parent.score, reverse=True)[0]
-        return parents
+        parents = sorted(parents, key=lambda parent: sum(parent.score))
+        # chosen_parent = choice(list(filter(lambda parent: sum(parent.score) != sum(parents[0].score), parents)))
+        chosen_parent, coverage = self.serialise_to_json(parents[0])
+        return chosen_parent, coverage
 
 
 
