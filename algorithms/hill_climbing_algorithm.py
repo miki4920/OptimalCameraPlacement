@@ -35,6 +35,13 @@ class HillClimbingAlgorithm(Solver):
                 return solution_list[0:i]
         return solution_list
 
+    def serialize_to_json(self, cameras):
+        serialized_cameras = []
+        for camera in cameras:
+            camera["camera"]["nodes"] = sorted([self.evaluator[node].coordinates_list for node in camera["camera"]["nodes"]])
+            serialized_cameras.append(camera["camera"])
+        return serialized_cameras
+
     def solve(self):
         cameras = []
         scores = self.evaluate_cameras()

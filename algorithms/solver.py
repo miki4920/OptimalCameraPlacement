@@ -24,9 +24,3 @@ class Solver:
     def evaluate_samples(self, nodes):
         self.evaluator["SAMPLE"].difference_update(nodes)
 
-    def serialize_to_json(self, cameras):
-        serialized_cameras = []
-        for camera in cameras:
-            camera["camera"]["nodes"] = sorted([self.evaluator[node].coordinates_list for node in camera["camera"]["nodes"]])
-            serialized_cameras.append(camera["camera"])
-        return serialized_cameras
