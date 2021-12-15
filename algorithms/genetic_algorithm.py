@@ -22,11 +22,11 @@ class Parent:
 class GeneticAlgorithm(Solver):
     def __init__(self, board, cameras):
         self.valid_cameras = {}
-        self.population = 30
-        self.generations = 100
-        self.k = 4
-        self.crossover_probability = 0.75
-        self.mutation_probability = 0.05
+        self.population = 100
+        self.generations = 50
+        self.k = 5
+        self.crossover_probability = 0.90
+        self.mutation_probability = 0.01
         super().__init__(board, cameras)
 
     def evaluate_cameras(self):
@@ -98,13 +98,16 @@ class GeneticAlgorithm(Solver):
     def get_camera_dictionary(self, index, orientation):
         camera = list(self.valid_cameras.keys())[index]
         nodes = []
+        node_set = set()
         for sample in self.evaluator["SAMPLE"]:
             sample = self.evaluator[sample]
             if (camera, orientation) in sample.seen_by:
                 nodes.append(sample.coordinates_list)
+                node_set.add(sample.coordinates_hash)
+        self.evaluator["SAMPLE"].difference_update(node_set)
         camera = self.evaluator[camera].coordinates_list
         camera_dictionary = {"range": 4, "fov": 90, "orientation": orientation, "camera_position": camera, "nodes": nodes}
-        return camera_dictionary
+        return camera_dictionary if len(node_set) > 0 else None
 
     def serialise_to_json(self, parent):
         cameras = []
@@ -112,7 +115,9 @@ class GeneticAlgorithm(Solver):
         coverage = round((coverage*100)/parent.score[1], 2)
         for i, camera in enumerate(parent.genotype):
             if camera:
-                cameras.append(self.get_camera_dictionary(i, camera))
+                camera = self.get_camera_dictionary(i, camera)
+                if camera is not None:
+                    cameras.append(camera)
         return cameras, coverage
 
     def solve(self):
@@ -131,9 +136,8 @@ class GeneticAlgorithm(Solver):
             parents = children
             [self.evaluate_parent(parent) for parent in parents]
         parents = sorted(parents, key=lambda parent: sum(parent.score))
-        # chosen_parent = choice(list(filter(lambda parent: sum(parent.score) != sum(parents[0].score), parents)))
-        chosen_parent, coverage = self.serialise_to_json(parents[0])
-        return chosen_parent, coverage
+        cameras, coverage = self.serialise_to_json(parents[0])
+        return cameras, coverage
 
 
 
