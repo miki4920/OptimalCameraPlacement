@@ -5,7 +5,7 @@ from algorithms.solver import Solver
 
 class HillClimbingAlgorithm(Solver):
     def __init__(self, board, cameras):
-        self.minimum_score = 1
+        self.minimum_score = 0
         super().__init__(board, cameras)
 
     def evaluate_cameras(self):
