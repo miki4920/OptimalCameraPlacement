@@ -6,8 +6,10 @@ for (let i = 0; i < collapsible.length; i++) {
         let content = this.nextElementSibling;
         if (content.style.maxHeight) {
             content.style.maxHeight = null;
+            content.style.overflow = "hidden";
         } else {
             content.style.maxHeight = content.scrollHeight + "px";
+            content.style.overflow = "visible";
         }
   }
 }

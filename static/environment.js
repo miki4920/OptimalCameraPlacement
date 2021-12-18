@@ -53,9 +53,9 @@ class Environment {
 
     update_board() {
         this.width = document.getElementById("width").value
-        this.width = this.width ? this.width : 10
+        this.width = this.width ? this.width : default_size
         this.height = document.getElementById("height").value
-        this.height = this.height ? this.height : 10
+        this.height = this.height ? this.height : default_size
         this.create_board(this.default_type)
     }
 
