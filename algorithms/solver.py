@@ -7,7 +7,7 @@ class Solver:
     def __init__(self, board, cameras):
         self.cameras = cameras
         self.evaluator = Evaluator(board)
-        self.orientations = (0, 90, 180, 270)
+        self.orientations = (0, 45, 90, 135, 180, 225, 270, 315)
 
     @staticmethod
     def create_element(camera, position, orientation):

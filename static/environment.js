@@ -41,7 +41,7 @@ class Environment {
     constructor(size, default_type) {
         this.canvas = document.getElementById("camera_canvas");
         this.board = [];
-        this.cameras = [{"range": 4,
+        this.cameras = [{"range": 4.5,
         "fov": 90}];
         this.width = size
         this.height = size
