@@ -44,16 +44,23 @@ class Evaluator:
 
     @staticmethod
     def calculate_angle(start, end):
-        value = math.atan2(end[1] - start[1], end[0] - start[0])
-        angle = np.rad2deg(value % (2 * np.pi))
+        angle = math.atan2(end[1]-start[1], end[0]-start[0])
+        angle = np.rad2deg(angle)
+        if angle < 0:
+            angle = 360 + angle
         return angle
 
     def check_angle(self, start, end, fov, orientations):
         valid_orientations = []
         angle = self.calculate_angle(start, end)
         for orientation in orientations:
-            angle_minimum, angle_maximum = orientation - fov, orientation + fov
-            if angle_minimum <= angle <= angle_maximum:
+            angle_one = (orientation-fov) % 360
+            angle_two = (orientation+fov) % 360
+            angle_between_difference = (angle_two-angle_one) % 360
+            angle_difference = (angle-angle_one) % 360
+            if angle_difference <= angle_between_difference < 180:
+                valid_orientations.append(orientation)
+            elif 180 < angle_between_difference <= angle_difference:
                 valid_orientations.append(orientation)
         return valid_orientations
 

@@ -5,7 +5,7 @@ from algorithms.solver import Solver
 
 class HillClimbingAlgorithm(Solver):
     def __init__(self, board, cameras):
-        self.minimum_score = 0
+        self.minimum_score = 1
         super().__init__(board, cameras)
 
     def evaluate_cameras(self):
@@ -38,7 +38,7 @@ class HillClimbingAlgorithm(Solver):
     def serialize_to_json(self, cameras):
         serialized_cameras = []
         for camera in cameras:
-            camera["camera"]["nodes"] = sorted([self.evaluator[node].coordinates_list for node in camera["camera"]["nodes"]])
+            camera["camera"]["nodes"] = [self.evaluator[node].coordinates_list for node in camera["camera"]["nodes"]]
             serialized_cameras.append(camera["camera"])
         return serialized_cameras
 
