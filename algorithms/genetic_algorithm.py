@@ -23,10 +23,11 @@ class GeneticAlgorithm(Solver):
     def __init__(self, board, cameras):
         self.valid_cameras = {}
         self.population = 100
-        self.generations = 50
-        self.k = 5
+        self.generations = 20
+        self.k = 10
         self.crossover_probability = 0.90
         self.mutation_probability = 0.01
+        self.total_score = 0
         super().__init__(board, cameras)
 
     def evaluate_cameras(self):
@@ -68,6 +69,7 @@ class GeneticAlgorithm(Solver):
                         seen_samples.add(sample.coordinates_hash)
         if count > 0:
             parent.score = ((len(self.evaluator["SAMPLE"]) - len(seen_samples)), count)
+            self.total_score += sum(parent.score)
         else:
             parent.score = (999999, 999999)
 
@@ -125,6 +127,7 @@ class GeneticAlgorithm(Solver):
         parents = self.initialise_population()
         [self.evaluate_parent(parent) for parent in parents]
         for i in range(0, self.generations):
+            self.total_score = 0
             children = []
             while len(children) < self.population:
                 parent_one = self.tournament_selection(parents)
@@ -138,6 +141,5 @@ class GeneticAlgorithm(Solver):
         parents = sorted(parents, key=lambda parent: sum(parent.score))
         cameras, coverage = self.serialise_to_json(parents[0])
         return cameras, coverage
-
 
 
