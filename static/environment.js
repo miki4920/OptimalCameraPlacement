@@ -195,14 +195,25 @@ class Environment {
         }
         let cameras_dimensions = this.cameras_file[this.cameras_file.length - 1];
         if(cameras_dimensions.length === 0) {
-            cameras_dimensions = [[0, 0]];
+            cameras_dimensions = [[1, 1]];
         }
         let samples_dimensions = this.samples_file[this.samples_file.length - 1];
         if(samples_dimensions.length === 0) {
-            cameras_dimensions = [[0, 0]];
+            cameras_dimensions = [[1, 1]];
         }
-        this.create_board(Math.max(cameras_dimensions[0], samples_dimensions[0]),
-            Math.max(cameras_dimensions[1], samples_dimensions[1]), this.default_type);
+        this.create_board(Math.max(cameras_dimensions[0], samples_dimensions[0])+1,
+            Math.max(cameras_dimensions[1], samples_dimensions[1])+1, this.default_type);
+        this.change_selected_type(document.getElementById("CAMERA"));
+        for(let i=0; i<this.cameras_file.length; i++) {
+            this.board[this.cameras_file[i][0]][this.cameras_file[i][1]].update(environment.selected_type, true)
+        }
+        this.change_selected_type(document.getElementById("SAMPLE"));
+        for(let i=0; i<this.samples_file.length; i++) {
+            this.board[this.samples_file[i][0]][this.samples_file[i][1]].update(environment.selected_type, true)
+        }
+        this.update_canvas();
+        this.change_selected_type(document.getElementById("EMPTY"));
+
     }
 
     get_text_file(type) {
@@ -234,7 +245,6 @@ class Environment {
     download_environment() {
         let cameras = this.get_text_file("CAMERA");
         let samples = this.get_text_file("SAMPLE");
-        console.log(cameras);
         this.download("cameras.txt", cameras);
         this.download("samples.txt", samples);
     }
