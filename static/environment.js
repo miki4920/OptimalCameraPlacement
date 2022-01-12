@@ -193,10 +193,50 @@ class Environment {
         if (!this.cameras_file || !this.samples_file) {
             return;
         }
-        let cameras_dimensions = this.cameras_file[this.cameras_file.length-1];
-        let samples_dimensions = this.samples_file[this.samples_file.length-1];
+        let cameras_dimensions = this.cameras_file[this.cameras_file.length - 1];
+        if(cameras_dimensions.length === 0) {
+            cameras_dimensions = [[0, 0]];
+        }
+        let samples_dimensions = this.samples_file[this.samples_file.length - 1];
+        if(samples_dimensions.length === 0) {
+            cameras_dimensions = [[0, 0]];
+        }
         this.create_board(Math.max(cameras_dimensions[0], samples_dimensions[0]),
             Math.max(cameras_dimensions[1], samples_dimensions[1]), this.default_type);
+    }
+
+    get_text_file(type) {
+        let text = "";
+        let count = 0;
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                if (this.board[x][y].type === type) {
+                    text += count + " " + this.board[x][y].x + " " + this.board[x][y].y + "\n";
+                    count += 1;
+                }
+            }
+        }
+        text = count + "\n" + text;
+        return text
+    }
+
+    download(file, text) {
+        let element = document.createElement('a');
+        element.setAttribute('href',
+            'data:text/plain;charset=utf-8, '
+            + encodeURIComponent(text));
+        element.setAttribute('download', file);
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
+
+    download_environment() {
+        let cameras = this.get_text_file("CAMERA");
+        let samples = this.get_text_file("SAMPLE");
+        console.log(cameras);
+        this.download("cameras.txt", cameras);
+        this.download("samples.txt", samples);
     }
 }
 
