@@ -1,9 +1,10 @@
 let default_size = 11;
 let drawing = false;
 
+
 let socket = io("http://127.0.0.1:5000/");
 
-class Camera{
+class Camera {
     constructor(camera) {
         this.range = camera["range"];
         this.fov = camera["fov"]
@@ -23,14 +24,13 @@ class Cell {
         this.camera = null;
     }
 
-    update(type, manual=false, camera=null) {
+    update(type, manual = false, camera = null) {
         this.type = type
         this.colour = Colours[type]
         this.manual_sample = manual
-        if(camera) {
+        if (camera) {
             this.camera = new Camera(camera);
-        }
-        else {
+        } else {
             this.camera = null;
         }
     }
@@ -41,29 +41,35 @@ class Environment {
     constructor(size, default_type) {
         this.canvas = document.getElementById("camera_canvas");
         this.board = [];
-        this.cameras = [{"range": 4,
-        "fov": 90}];
+        this.cameras = [{
+            "range": 4,
+            "fov": 90
+        }];
         this.width = size
         this.height = size
         this.default_type = default_type;
         this.selected_type = default_type;
-        this.create_board(default_type);
+        this.update_board();
         this.pixel_resolution = [];
+        this.cameras_file = "";
+        this.samples_file = "";
     }
 
     update_board() {
-        this.width = document.getElementById("width").value
-        this.width = this.width ? this.width : default_size
-        this.height = document.getElementById("height").value
-        this.height = this.height ? this.height : default_size
-        this.create_board(this.default_type)
+        let width = document.getElementById("width").value
+        width = width && !isNaN(width) ? parseInt(width) : default_size;
+        let height = document.getElementById("height").value
+        height = height && !isNaN(height) ? parseInt(height) : default_size;
+        this.create_board(width, height, this.default_type)
     }
 
-    create_board(type) {
+    create_board(width, height, type) {
+        this.width = width;
+        this.height = height;
         let map = [];
-        for (let x = 0; x < this.width; x++) {
+        for (let x = 0; x < width; x++) {
             map[x] = [];
-            for (let y = 0; y < this.height; y++) {
+            for (let y = 0; y < height; y++) {
                 map[x].push(new Cell(x, y, type,))
             }
         }
@@ -86,15 +92,10 @@ class Environment {
     update_canvas() {
         this.canvas.width = this.canvas.clientWidth;
         this.canvas.height = this.canvas.clientHeight;
-
-        let width = document.getElementById('width').value;
-        width = width && !isNaN(width) ? parseInt(width) : default_size;
-        let height = document.getElementById('height').value;
-        height = height && !isNaN(height) ? parseInt(height) : default_size;
-
-        this.pixel_resolution = [this.canvas.clientWidth / width,
-            this.canvas.clientHeight / height];
+        this.pixel_resolution = [this.canvas.clientWidth / this.width,
+            this.canvas.clientHeight / this.height];
         this.fill_canvas();
+
     }
 
     change_selected_type(type) {
@@ -108,35 +109,34 @@ class Environment {
 
     normalise(value, index, type) {
         let result = Math.floor(value / this.pixel_resolution[index]);
-        if(type === "x") {
-            if(result > this.width-1) {
-                return this.width-1
+        if (type === "x") {
+            if (result > this.width - 1) {
+                return this.width - 1
+            }
+        } else if (type === "y") {
+            if (result > this.height - 1) {
+                return this.height - 1
             }
         }
-        else if(type === "y") {
-            if(result > this.height-1) {
-                return this.height-1
-            }
-        }
-        return result > 0 ? result : 0; 
+        return result > 0 ? result : 0;
     }
 
     draw(x, y, colour) {
         let context = this.get_context();
         context.fillStyle = colour;
-        context.fillRect(x*this.pixel_resolution[0], y*this.pixel_resolution[1],
-            Math.floor(this.pixel_resolution[0] -1), Math.floor(this.pixel_resolution[1] -1));
+        context.fillRect(x * this.pixel_resolution[0], y * this.pixel_resolution[1],
+            Math.floor(this.pixel_resolution[0] - 1), Math.floor(this.pixel_resolution[1] - 1));
     }
 
     sample() {
         let sampling = document.getElementById("sampling_rate");
         let sampling_rate = parseInt(sampling.value);
-        for(let x=0; x<this.width; x++) {
-            for(let y=0; y<this.height; y++) {
-                if(this.board[x][y].type === "SAMPLE" && !this.board[x][y].manual_sample) {
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                if (this.board[x][y].type === "SAMPLE" && !this.board[x][y].manual_sample) {
                     this.board[x][y].update("EMPTY");
                 }
-                if((y % sampling_rate === 0 && x% sampling_rate === 0) && this.board[x][y].type === "EMPTY" && sampling_rate !== 1) {
+                if ((y % sampling_rate === 0 && x % sampling_rate === 0) && this.board[x][y].type === "EMPTY" && sampling_rate !== 1) {
                     this.board[x][y].update("SAMPLE");
                 }
             }
@@ -145,18 +145,64 @@ class Environment {
     }
 
     clean_selection() {
-        for(let x=0; x<this.width; x++) {
-            for(let y=0; y<this.height; y++) {
-                if(this.board[x][y].type === "SELECTED") {
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                if (this.board[x][y].type === "SELECTED") {
                     this.board[x][y].update("CAMERA");
                 }
             }
         }
     }
+
+    process_text(text) {
+        text = text.split("\n");
+        text = text.slice(1, text.length - 1)
+        for (let i = 0; i < text.length; i++) {
+            text[i] = text[i].split(" ");
+            text[i] = text[i].slice(1, 3);
+            text[i] = text[i].map(number => Math.abs(parseInt(number)));
+        }
+        let set = new Set(text.map(JSON.stringify));
+        text = Array.from(set).map(JSON.parse);
+        text = text.sort(function (a, b) {
+            if (a[0] === b[0]) {
+                return a[1] - b[1];
+            }
+            return a[0] - b[0];
+        });
+        return text;
+    }
+
+    set_camera_file(e) {
+        let camera_reader = new FileReader();
+        camera_reader.onload = function (e) {
+            environment.cameras_file = environment.process_text(e.target.result);
+        };
+        camera_reader.readAsText(e.target.files[0]);
+    }
+
+    set_sample_file(e) {
+        let sample_reader = new FileReader();
+        sample_reader.onload = function (e) {
+            environment.samples_file = environment.process_text(e.target.result);
+        };
+        sample_reader.readAsText(e.target.files[0]);
+    }
+
+    update_environment_based_on_files() {
+        if (!this.cameras_file || !this.samples_file) {
+            return;
+        }
+        let cameras_dimensions = this.cameras_file[this.cameras_file.length-1];
+        let samples_dimensions = this.samples_file[this.samples_file.length-1];
+        this.create_board(Math.max(cameras_dimensions[0], samples_dimensions[0]),
+            Math.max(cameras_dimensions[1], samples_dimensions[1]), this.default_type);
+    }
 }
 
+
 function update_information(node) {
-    document.getElementById("coordinates").innerText = "X: " + node.x+ ", Y: " + node.y
+    document.getElementById("coordinates").innerText = "X: " + node.x + ", Y: " + node.y
     document.getElementById("type").innerText = "Type: " + node.type
     let range = document.getElementById("range")
     let fov = document.getElementById("fov")
@@ -167,15 +213,14 @@ function update_information(node) {
         fov.innerText = "Camera FoV: " + node.camera.fov
         orientation.innerText = "Camera Orientation: " + node.camera.orientation
         nodes.innerText = "Camera's Vision: " + node.camera.nodes
-    }
-    else {
+    } else {
         range.innerText = ""
         fov.innerText = ""
         orientation.innerText = ""
         nodes.innerText = ""
     }
     let wrapper = document.getElementById("information")
-    if(wrapper.style.maxHeight) {
+    if (wrapper.style.maxHeight) {
         wrapper.style.maxHeight = wrapper.scrollHeight + "px";
     }
 }
@@ -219,7 +264,14 @@ socket.on("update_board", (message) => {
         environment.board[x][y].update("SELECTED", false, element);
     })
     environment.update_canvas();
-    document.getElementById("coverage").innerHTML = "Total Coverage: " + Math.floor(message["coverage"]*solution.length) + " %"
+    document.getElementById("coverage").innerHTML = "Total Coverage: " + Math.floor(message["coverage"] * solution.length) + " %"
     document.getElementById("coverage_per_camera").innerHTML = "Average Coverage per Camera: " + message["coverage"] + " %"
 })
+
+
+document.getElementById('camera_upload')
+    .addEventListener('change', environment.set_camera_file, false);
+document.getElementById('sample_upload')
+    .addEventListener('change', environment.set_sample_file, false);
+
 
