@@ -106,11 +106,11 @@ output {
     margin: 4px 0 4px 0;
 }
 
-label {
-    flex-basis: 50%;
+label, .text {
+    flex-basis: 100%;
     flex-grow: 1;
     font-size: 1.06em;
-    margin: 4px 0 4px 0;
+    margin: 4px 0 4px 2px;
 }
 
 input, select {
@@ -132,12 +132,16 @@ button {
     flex-basis: 100%;
     padding: 8px 8px;
     border-radius: 8px;
-    margin: 8px 0;
+    margin: 4px 0;
     border: solid #0B0C10 4px;
 }
 
 .execute:hover {
     border: solid #45A29E 4px;
+}
+
+.file {
+    display: none;
 }
 
 
