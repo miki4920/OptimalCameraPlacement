@@ -31,6 +31,17 @@
                 <button onclick="environment.update_board()" class="execute">Create New Canvas</button>
             </section>
         </div>
+        <button class="collapsible">Files</button>
+        <div class="wrapper">
+            <section>
+                <button class="execute" onclick="document.getElementById('camera_upload').click()">Upload Cameras</button>
+                <button class="execute" onclick="document.getElementById('sample_upload').click()">Upload Samples</button>
+                <button class="execute" onclick="environment.update_environment_based_on_files()">Update Environment</button>
+                <input id="camera_upload" type="file" class="file" accept=".txt"/>
+                <input id="sample_upload" type="file" class="file" accept=".txt"/>
+                <button class="execute">Download Environment</button>
+            </section>
+        </div>
         <button class="collapsible">Sampling & Solver</button>
         <div class="wrapper">
             <section>
