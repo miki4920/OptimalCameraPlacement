@@ -1,7 +1,7 @@
 import colorsys
 
 
-options = {
+tiles = {
     "EMPTY": "rgb(197,198,199)",
     "WALL": "rgb(31,40,51)",
     "CAMERA": "rgb(100,112,125)",
