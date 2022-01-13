@@ -24,13 +24,15 @@ def environment(message: Dict[str, str]):
     algorithm = message.get("algorithm")
     board = message.get("board")
     cameras = message.get("cameras")
-    if algorithm == "hill_climbing_algorithm":
-        solver = HillClimbingAlgorithm(board, cameras)
-    elif algorithm == "genetic_algorithm":
-        solver = GeneticAlgorithm(board, cameras)
-    else:
+    algorithms = {
+        "hill_climbing_algorithm": HillClimbingAlgorithm,
+        "genetic_algorithm": GeneticAlgorithm
+    }
+    algorithm = algorithms.get(algorithm)
+    if not algorithm:
         return
-    solution, coverage = solver.solve()
+    algorithm = algorithm(board, cameras)
+    solution, coverage = algorithm.solve()
     solution = solution if solution else {}
     data = {"solution": solution, "coverage": round(coverage, 2)}
     emit("update_board", json.dumps(data), to=request.sid)
