@@ -9,5 +9,5 @@ algorithms = {
 
 def get_capitalised_name(algorithm):
     algorithm = algorithm.split("_")
-    algorithm = list(map(lambda x: x.capitalise(), algorithm))
-    return " ". join(algorithm)
+    algorithm = list(map(lambda x: x.capitalize(), algorithm))
+    return " ".join(algorithm)
