@@ -5,3 +5,9 @@ algorithms = {
     "hill_climbing_algorithm": HillClimbingAlgorithm,
     "genetic_algorithm": GeneticAlgorithm
 }
+
+
+def get_capitalised_name(algorithm):
+    algorithm = algorithm.split("_")
+    algorithm = list(map(lambda x: x.capitalise(), algorithm))
+    return " ". join(algorithm)

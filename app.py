@@ -6,10 +6,11 @@ from flask_socketio import SocketIO, emit
 from typing import Dict
 
 from option_dictionaries.tile_options import tiles, get_complementary_colour
-from option_dictionaries.algorithm_options import algorithms
+from option_dictionaries.algorithm_options import algorithms, get_capitalised_name
 
 app = Flask(__name__)
 app.jinja_env.globals.update(complementary=get_complementary_colour)
+app.jinja_env.globals.update(capitalise=get_capitalised_name)
 socket = SocketIO(app)
 
 
@@ -23,7 +24,6 @@ def environment(message: Dict[str, str]):
     algorithm = message.get("algorithm")
     board = message.get("board")
     cameras = message.get("cameras")
-
     algorithm = algorithms.get(algorithm)
     if not algorithm:
         return
