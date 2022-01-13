@@ -3,10 +3,25 @@ from random import choice
 from algorithms.solver import Solver
 
 
+def create_element(camera, position, orientation):
+    camera_dictionary = camera.copy()
+    camera_dictionary["orientation"] = orientation
+    camera_dictionary["camera_position"] = position
+    camera_dictionary["nodes"] = set()
+    element = {
+        "camera": camera_dictionary,
+        "score": 0
+    }
+    return element
+
+
 class HillClimbingAlgorithm(Solver):
     def __init__(self, board, cameras):
         self.minimum_score = 1
         super().__init__(board, cameras)
+
+    def evaluate_samples(self, nodes):
+        self.evaluator["SAMPLE"].difference_update(nodes)
 
     def evaluate_cameras(self):
         scores = {}
