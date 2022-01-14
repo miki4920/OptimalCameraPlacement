@@ -24,9 +24,9 @@ class GeneticAlgorithm(Solver):
         self.valid_cameras = {}
         self.population = 100
         self.generations = 20
-        self.k = 10
-        self.crossover_probability = 0.90
-        self.mutation_probability = 0.01
+        self.k = 100
+        self.crossover_probability = 0.99
+        self.mutation_probability = 0.1
         self.total_score = 0
         super().__init__(board, cameras)
 
