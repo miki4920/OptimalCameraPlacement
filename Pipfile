@@ -9,6 +9,7 @@ sqlalchemy = "*"
 flask-socketio = "*"
 numpy = "*"
 deap = "*"
+sortedcontainers = "*"
 
 [dev-packages]
 
