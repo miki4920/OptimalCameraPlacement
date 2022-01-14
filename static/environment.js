@@ -6,10 +6,10 @@ let socket = io("http://127.0.0.1:5000/");
 
 class Camera {
     constructor(camera) {
-        this.range = camera["range"];
-        this.fov = camera["fov"]
+        this.range = camera["camera"]["range"];
+        this.fov = camera["camera"]["fov"]
         this.orientation = camera["orientation"]
-        this.nodes = camera["nodes"].map(a => "(" + a.join(", ") + ")").join("; ");
+        this.nodes = camera["nodes"]
     }
 }
 
@@ -20,14 +20,12 @@ class Cell {
         this.y = y
         this.type = type
         this.colour = Colours[type]
-        this.manual_sample = false
         this.camera = null;
     }
 
-    update(type, manual = false, camera = null) {
+    update(type, camera = null) {
         this.type = type
         this.colour = Colours[type]
-        this.manual_sample = manual
         if (camera) {
             this.camera = new Camera(camera);
         } else {
@@ -42,7 +40,7 @@ class Environment {
         this.canvas = document.getElementById("camera_canvas");
         this.board = [];
         this.cameras = [{
-            "range": 4,
+            "range": 8,
             "fov": 90
         }];
         this.width = size
@@ -133,7 +131,7 @@ class Environment {
         let sampling_rate = parseInt(sampling.value);
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
-                if (this.board[x][y].type === "SAMPLE" && !this.board[x][y].manual_sample) {
+                if (this.board[x][y].type === "SAMPLE") {
                     this.board[x][y].update("EMPTY");
                 }
                 if ((y % sampling_rate === 0 && x % sampling_rate === 0) && this.board[x][y].type === "EMPTY" && sampling_rate !== 1) {
@@ -194,22 +192,16 @@ class Environment {
             return;
         }
         let cameras_dimensions = this.cameras_file[this.cameras_file.length - 1];
-        if(cameras_dimensions.length === 0) {
-            cameras_dimensions = [[1, 1]];
-        }
         let samples_dimensions = this.samples_file[this.samples_file.length - 1];
-        if(samples_dimensions.length === 0) {
-            cameras_dimensions = [[1, 1]];
-        }
         this.create_board(Math.max(cameras_dimensions[0], samples_dimensions[0])+1,
             Math.max(cameras_dimensions[1], samples_dimensions[1])+1, this.default_type);
         this.change_selected_type(document.getElementById("CAMERA"));
         for(let i=0; i<this.cameras_file.length; i++) {
-            this.board[this.cameras_file[i][0]][this.cameras_file[i][1]].update(environment.selected_type, true)
+            this.board[this.cameras_file[i][0]][this.cameras_file[i][1]].update(environment.selected_type)
         }
         this.change_selected_type(document.getElementById("SAMPLE"));
         for(let i=0; i<this.samples_file.length; i++) {
-            this.board[this.samples_file[i][0]][this.samples_file[i][1]].update(environment.selected_type, true)
+            this.board[this.samples_file[i][0]][this.samples_file[i][1]].update(environment.selected_type)
         }
         this.update_canvas();
         this.change_selected_type(document.getElementById("EMPTY"));
@@ -309,9 +301,9 @@ socket.on("update_board", (message) => {
     message = JSON.parse(message)
     let solution = message["solution"]
     solution.forEach((element) => {
-        let x = element["camera_position"][0];
-        let y = element["camera_position"][1];
-        environment.board[x][y].update("SELECTED", false, element);
+        let x = element["x"];
+        let y = element["y"];
+        environment.board[x][y].update("SELECTED", element, element);
     })
     environment.update_canvas();
     document.getElementById("coverage").innerHTML = "Total Coverage: " + Math.floor(message["coverage"] * solution.length) + " %"
