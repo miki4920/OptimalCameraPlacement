@@ -1,28 +1,25 @@
 import math
-from typing import Tuple, Dict, Union, List
-
 import numpy as np
+
+from typing import Tuple, Dict, Union, List
+from option_dictionaries.tile_options import tiles
 
 
 class Node:
-    def __init__(self, element):
-        self.coordinates = np.array((int(element.get("x")), int(element.get("y"))))
-        self.coordinates_list = self.coordinates.tolist()
+    def __init__(self, x, y, node_type):
+        self.coordinates = np.array((int(x), int(y)))
         self.coordinates_hash = self.coordinates.tobytes()
-        self.node_type = element.get("type")
-        self.seen_by = set()
-
-    def __eq__(self, other):
-        return np.array_equal(self.coordinates, other.coordinates)
+        self.coordinates_list = self.coordinates.tolist()
+        self.node_type = node_type
 
 
 def create_board(board: Dict[str, str]) -> Union[Dict[Tuple[int, int], Node], Dict[str, List[Node]]]:
     board_types = {}
+    for key in tiles.keys():
+        board_types[key] = set()
     for x, row in enumerate(board):
         for y, element in enumerate(row):
-            node = Node(element)
-            if not board_types.get(node.node_type):
-                board_types[node.node_type] = set()
+            node = Node(element.get("x"), element.get("y"), element.get("type"))
             board_types[node.node_type].add(node.coordinates_hash)
             board_types[node.coordinates_hash] = node
     return board_types
@@ -75,7 +72,7 @@ class Evaluator:
             grid_points = np.c_[np.round(np.linspace(ends[0, 0], ends[1, 0], d1 + 1))
                                .astype(np.int32),
                                np.linspace(ends[0, 1], ends[1, 1], d1 + 1, dtype=np.int32)]
-        return not any(map(lambda point: self[point.tobytes()].node_type == "WALL", grid_points))
+        return not any(map(lambda point: self[point.tobytes()].node_type not in ["EMPTY", "SAMPLE", "CAMERA"], grid_points))
 
     def visible(self, start, end, camera, orientations):
         range_constrain = self.check_range(start, end, float(camera["range"]))
