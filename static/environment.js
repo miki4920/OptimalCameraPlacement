@@ -40,7 +40,7 @@ class Environment {
         this.canvas = document.getElementById("camera_canvas");
         this.board = [];
         this.cameras = [{
-            "range": 8,
+            "range": 5,
             "fov": 90
         }];
         this.width = size
@@ -279,7 +279,7 @@ function set_event_listeners(environment) {
         let y = environment.normalise(e["layerY"], 1, "y");
         update_information(environment.board[x][y]);
         if (drawing) {
-            environment.board[x][y].update(environment.selected_type, true)
+            environment.board[x][y].update(environment.selected_type)
             environment.update_canvas()
         }
     })
@@ -303,7 +303,7 @@ socket.on("update_board", (message) => {
     solution.forEach((element) => {
         let x = element["x"];
         let y = element["y"];
-        environment.board[x][y].update("SELECTED", element, element);
+        environment.board[x][y].update("SELECTED", element);
     })
     environment.update_canvas();
     document.getElementById("coverage").innerHTML = "Total Coverage: " + Math.floor(message["coverage"] * solution.length) + " %"
