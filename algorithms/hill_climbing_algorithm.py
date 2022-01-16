@@ -12,8 +12,11 @@ class HillClimbingAlgorithm(Solver):
         index = self.camera_nodes.index(score)
         return self.camera_nodes[index-len(self.camera_nodes):]
 
-    def serialize_to_json(self, cameras):
-        return [node.json(self.evaluator) for node in cameras]
+    def update_evaluated_cameras(self, selected_node):
+        selected_node.final_camera_set = selected_node.camera_set.copy()
+        [node.update(selected_node) for node in self.camera_nodes]
+        self.camera_nodes = [node for node in self.camera_nodes if len(node) > 0]
+        self.camera_nodes = sorted(self.camera_nodes)
 
     def solve(self):
         cameras = []
@@ -21,7 +24,7 @@ class HillClimbingAlgorithm(Solver):
             camera = choice(self.get_maximum_values())
             cameras.append(camera)
             self.update_evaluated_cameras(camera)
-        coverage = round(sum(map(lambda camera: len(camera.final_camera_set), cameras)) / len(self.evaluator["SAMPLE"]) * 100, 2)
+        coverage = round(sum([len(camera.final_camera_set) for camera in cameras]) / len(self.evaluator["SAMPLE"]) * 100, 2)
         coverage = coverage/len(cameras)
         cameras = self.serialize_to_json(cameras)
         return cameras, coverage
