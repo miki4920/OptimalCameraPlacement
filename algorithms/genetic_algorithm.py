@@ -23,7 +23,7 @@ class Parent:
             filtered_set = filtered_set.union(gene.camera_set)
         return len(filtered_set), len(filtered_genotype), len(filtered_set)-len(filtered_genotype)
 
-
+# TODO: Implement Random Sampling based on genetic algorithm
 class GeneticAlgorithm(Solver):
     def __init__(self, board, cameras):
         self.population = 50
@@ -37,9 +37,10 @@ class GeneticAlgorithm(Solver):
     def update_evaluated_cameras(self):
         camera_dictionary = {}
         for camera in self.camera_nodes:
-            if camera.hash() not in camera_dictionary:
-                camera_dictionary[camera.hash()] = []
-            camera_dictionary[camera.hash()].append(camera)
+            if len(camera) >= 3:
+                if camera.hash() not in camera_dictionary:
+                    camera_dictionary[camera.hash()] = []
+                camera_dictionary[camera.hash()].append(camera)
         return camera_dictionary
 
     def initialise_parent(self):
