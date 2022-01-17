@@ -1,47 +1,18 @@
 from random import choice, random
 
 from algorithms.solver import Solver
+from algorithms.population_helpers import Parent, get_camera_dictionary
 
 
-class Parent:
-    def __init__(self, genotype):
-        self.genotype = genotype
-
-    def __len__(self):
-        return len(self.genotype)
-
-    def __getitem__(self, item):
-        return self.genotype[item]
-
-    def __setitem__(self, key, value):
-        self.genotype[key] = value
-
-    def score(self):
-        filtered_genotype = [gene for gene in self.genotype if gene is not None]
-        filtered_set = set()
-        for gene in filtered_genotype:
-            filtered_set = filtered_set.union(gene.camera_set)
-        return len(filtered_set), len(filtered_genotype), len(filtered_set)-len(filtered_genotype)
-
-# TODO: Implement Random Sampling based on genetic algorithm
 class GeneticAlgorithm(Solver):
     def __init__(self, board, cameras):
         self.population = 50
-        self.generations = 20
-        self.k = 20
-        self.crossover_probability = 0.5
-        self.mutation_probability = 0.5
+        self.generations = 1
+        self.k = 1
+        self.crossover_probability = 0
+        self.mutation_probability = 1
         super().__init__(board, cameras)
-        self.camera_nodes = self.update_evaluated_cameras()
-
-    def update_evaluated_cameras(self):
-        camera_dictionary = {}
-        for camera in self.camera_nodes:
-            if len(camera) >= 3:
-                if camera.hash() not in camera_dictionary:
-                    camera_dictionary[camera.hash()] = []
-                camera_dictionary[camera.hash()].append(camera)
-        return camera_dictionary
+        self.camera_nodes = get_camera_dictionary(self.camera_nodes)
 
     def initialise_parent(self):
         genotype = [None if random() >= 1 else choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
@@ -72,7 +43,7 @@ class GeneticAlgorithm(Solver):
         sample_set = set()
         for i, gene in enumerate(parent.genotype):
             if gene is not None:
-                if len(gene.camera_set.difference(sample_set)) <= 2:
+                if len(gene.camera_set.difference(sample_set)) <= 1:
                     parent.genotype[i] = None
                 else:
                     sample_set = sample_set.union(gene.camera_set)
