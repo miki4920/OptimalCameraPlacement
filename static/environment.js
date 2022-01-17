@@ -40,7 +40,7 @@ class Environment {
         this.canvas = document.getElementById("camera_canvas");
         this.board = [];
         this.cameras = [{
-            "range": 5,
+            "range": 8,
             "fov": 90
         }];
         this.width = size
