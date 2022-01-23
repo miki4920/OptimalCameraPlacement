@@ -7,15 +7,15 @@ from algorithms.population_helpers import Parent, get_camera_dictionary
 class GeneticAlgorithm(Solver):
     def __init__(self, board, cameras):
         self.population = 50
-        self.generations = 1
-        self.k = 1
-        self.crossover_probability = 0
-        self.mutation_probability = 1
+        self.generations = 20
+        self.k = 20
+        self.crossover_probability = 0.5
+        self.mutation_probability = 0.1
         super().__init__(board, cameras)
         self.camera_nodes = get_camera_dictionary(self.camera_nodes)
 
     def initialise_parent(self):
-        genotype = [None if random() >= 1 else choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
+        genotype = [choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
         parent = Parent(genotype)
         return parent
 
@@ -43,7 +43,7 @@ class GeneticAlgorithm(Solver):
         sample_set = set()
         for i, gene in enumerate(parent.genotype):
             if gene is not None:
-                if len(gene.camera_set.difference(sample_set)) <= 1:
+                if len(gene.camera_set.difference(sample_set)) < 1:
                     parent.genotype[i] = None
                 else:
                     sample_set = sample_set.union(gene.camera_set)
