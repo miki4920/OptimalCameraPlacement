@@ -20,6 +20,8 @@ class CameraNode(Node):
         return len(self) < len(other)
 
     def json(self):
+        if len(self.final_camera_set) == 0:
+            self.final_camera_set = self.camera_set
         return {"x": self.coordinates_tuple[0],
                 "y": self.coordinates_tuple[1],
                 "orientation": self.orientation,
