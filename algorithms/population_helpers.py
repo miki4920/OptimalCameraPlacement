@@ -22,8 +22,10 @@ class Parent:
         self.genotype[key] = value
 
     def score(self):
-        filtered_genotype = [gene for gene in self.genotype if gene is not None]
+        count = 0
         filtered_set = set()
-        for gene in filtered_genotype:
-            filtered_set = filtered_set.union(gene.camera_set)
-        return len(filtered_set), len(filtered_genotype), len(filtered_set)-len(filtered_genotype)
+        for gene in self.genotype:
+            if gene:
+                filtered_set = filtered_set.union(gene.camera_set)
+                count += 1
+        return len(filtered_set), count, len(filtered_set)-count
