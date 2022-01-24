@@ -1,4 +1,3 @@
-from random import choice
 from environment import Evaluator, Node
 
 
@@ -8,7 +7,6 @@ class CameraNode(Node):
         self.camera = camera
         self.orientation = orientation
         self.camera_set = set()
-        self.final_camera_set = set()
 
     def __len__(self):
         return len(self.camera_set)
@@ -20,17 +18,15 @@ class CameraNode(Node):
         return len(self) < len(other)
 
     def json(self):
-        if len(self.final_camera_set) == 0:
-            self.final_camera_set = self.camera_set
         return {"x": self.coordinates_tuple[0],
                 "y": self.coordinates_tuple[1],
                 "orientation": self.orientation,
                 "camera": self.camera,
                 "nodes": [f" {node}"
-                          for node in self.final_camera_set]}
+                          for node in self.camera_set]}
 
     def update(self, other):
-        self.camera_set -= other.final_camera_set
+        self.camera_set -= other.camera_set
 
     def add_node(self, position):
         self.camera_set.add(position)
@@ -41,10 +37,7 @@ class Solver:
         self.orientations = (0, 45, 90, 135, 180, 225, 270, 315)
         self.cameras = cameras
         self.evaluator = Evaluator(board)
-        self.camera_nodes = sorted(filter(lambda node: len(node) > 0, self.evaluated_cameras()))
-
-    def serialize_to_json(self, cameras):
-        return [node.json() for node in cameras]
+        self.camera_nodes = sorted(self.evaluated_cameras())
 
     def evaluated_cameras(self):
         cameras_dictionary = {}
