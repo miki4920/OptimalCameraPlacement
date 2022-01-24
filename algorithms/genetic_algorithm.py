@@ -6,66 +6,62 @@ from algorithms.population_helpers import Parent, get_camera_dictionary
 
 class GeneticAlgorithm(Solver):
     def __init__(self, board, cameras):
-        self.population = 50
-        self.generations = 20
-        self.k = 20
-        self.crossover_probability = 0.5
-        self.mutation_probability = 0.1
+        self.population = 5
+        self.generations = 100
+        self.k = 5
+        self.mutation_probability = 1
         super().__init__(board, cameras)
         self.camera_nodes = get_camera_dictionary(self.camera_nodes)
 
     def initialise_parent(self):
-        genotype = [choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
+        genotype = [choice(self.camera_nodes[key]) if random() >= 0.5 else None for key in self.camera_nodes.keys()]
         parent = Parent(genotype)
+        parent.evaluate()
+        parent.repair()
         return parent
 
     def tournament_selection(self, parents):
         tournament_population = []
         for i in range(0, self.k):
             tournament_population.append(choice(parents))
-        return max(tournament_population, key=lambda parent: parent.score()[-1])
+        return max(tournament_population, key=lambda parent: parent.score)
 
     def crossover(self, parent_one, parent_two):
         if random() > self.crossover_probability:
             return parent_one, parent_two
         for i in range(0, len(parent_one)):
-            parent_one[i] = parent_one[i] if random() <= 0.5 else parent_two[i]
-            parent_two[i] = parent_one[i] if random() <= 0.5 else parent_two[i]
+            parent_one = parent_one if random() <= 0.5 else parent_two
+            parent_two = parent_one if random() <= 0.5 else parent_two
         return parent_one, parent_two
 
     def mutate(self, parent):
         for i in range(0, len(parent.genotype)):
             if random() <= self.mutation_probability:
-                parent.genotype[i] = choice(list(self.camera_nodes.values())[i])
-
-    @staticmethod
-    def repair(parent):
-        sample_set = set()
-        for i, gene in enumerate(parent.genotype):
-            if gene is not None:
-                if len(gene.camera_set.difference(sample_set)) < 1:
-                    parent.genotype[i] = None
+                if random() <= 0.5:
+                    parent.genotype[i] = choice(list(self.camera_nodes.values())[i])
                 else:
-                    sample_set = sample_set.union(gene.camera_set)
+                    parent.genotype[i] = None
 
     def solve(self):
         parents = [self.initialise_parent() for _ in range(self.population)]
+        max_parent = parents[0]
         for i in range(0, self.generations):
             children = []
+            max_child = max(parents, key=lambda parent: parent.score)
+            max_parent = max_child if max_child.score > max_parent.score else max_parent
+            print(max_parent.score)
             while len(children) < self.population:
-                parent_one = self.tournament_selection(parents)
-                parent_two = self.tournament_selection(parents)
-                parent_one, parent_two = self.crossover(parent_one, parent_two)
+                parent_one = self.initialise_parent()
+                parent_two = self.initialise_parent()
                 self.mutate(parent_one)
-                self.repair(parent_one)
+                parent_one.repair()
+                parent_one.evaluate()
                 self.mutate(parent_two)
-                self.repair(parent_two)
+                parent_two.repair()
+                parent_two.evaluate()
                 children.extend([parent_one, parent_two])
             parents = children
-        parents = sorted(parents, key=lambda parent: parent.score()[-1])
-        cameras = [camera for camera in parents[0].genotype if camera is not None]
-        score = parents[0].score()
-        coverage = round(score[0] / len(self.evaluator["SAMPLE"]) * 100, 2)
-        coverage = coverage/score[1]
-        cameras = self.serialize_to_json(cameras)
+        cameras = [camera for camera in max_parent.genotype if camera is not None]
+        coverage = round(len(max_parent.coverage) / len(self.evaluator["SAMPLE"]) * 100, 2)
+        coverage = coverage/max_parent.cameras
         return cameras, coverage
