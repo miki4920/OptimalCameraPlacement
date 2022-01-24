@@ -6,9 +6,10 @@ from algorithms.population_helpers import Parent, get_camera_dictionary
 
 class GeneticAlgorithm(Solver):
     def __init__(self, board, cameras):
-        self.population = 5
-        self.generations = 100
-        self.k = 5
+        self.population = 100
+        self.generations = 20
+        self.k = 1
+        self.crossover_probability = 0.7
         self.mutation_probability = 1
         super().__init__(board, cameras)
         self.camera_nodes = get_camera_dictionary(self.camera_nodes)
@@ -37,10 +38,7 @@ class GeneticAlgorithm(Solver):
     def mutate(self, parent):
         for i in range(0, len(parent.genotype)):
             if random() <= self.mutation_probability:
-                if random() <= 0.5:
-                    parent.genotype[i] = choice(list(self.camera_nodes.values())[i])
-                else:
-                    parent.genotype[i] = None
+                parent.genotype[i] = choice(list(self.camera_nodes.values())[i])
 
     def solve(self):
         parents = [self.initialise_parent() for _ in range(self.population)]
