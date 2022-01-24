@@ -29,7 +29,7 @@ def environment(message: Dict[str, str]):
         return
     algorithm = algorithm(board, cameras)
     solution, coverage = algorithm.solve()
-    solution = solution if solution else {}
+    solution = [camera.json() for camera in solution] if solution else {}
     data = {"solution": solution, "coverage": round(coverage, 2)}
     emit("update_board", json.dumps(data), to=request.sid)
 
