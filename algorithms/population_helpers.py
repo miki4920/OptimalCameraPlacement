@@ -43,7 +43,7 @@ class Parent:
         for i in indexes:
             gene = self.genotype[i]
             if gene is not None:
-                if len(gene.camera_set.difference(sample_set)) < 1:
+                if len(gene.camera_set.difference(sample_set)) < 2:
                     self.genotype[i] = None
                 else:
                     sample_set = sample_set.union(gene.camera_set)
