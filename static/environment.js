@@ -148,8 +148,6 @@ class Environment {
         }
     }
 
-
-
     get_text_file(type) {
         let text = "";
         for (let x = 0; x < this.width; x++) {
@@ -159,26 +157,8 @@ class Environment {
                 }
             }
         }
-        text = this.width + this.height + "\n" + text;
+        text = this.width + "\n" + this.height + "\n" + text;
         return text
-    }
-
-    download(file, text) {
-        let element = document.createElement('a');
-        element.setAttribute('href',
-            'data:text/plain;charset=utf-8, '
-            + encodeURIComponent(text));
-        element.setAttribute('download', file);
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    }
-
-    download_environment() {
-        let cameras = this.get_text_file("CAMERA");
-        let samples = this.get_text_file("SAMPLE");
-        this.download("cameras.txt", cameras);
-        this.download("samples.txt", samples);
     }
 }
 

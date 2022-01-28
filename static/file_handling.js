@@ -6,7 +6,6 @@ function process_text(text) {
     text = text.slice(2, text.length - 1)
     for (let i = 0; i < text.length; i++) {
         text[i] = text[i].split(" ");
-        text[i] = text[i].slice(0, 3);
         text[i] = text[i].map(number => parseInt(number));
     }
     return {text, dimensions};
@@ -42,6 +41,25 @@ class FileProcessor {
         environment.update_canvas();
         environment.change_selected_type(document.getElementById("EMPTY"));
     }
+
+    download(file, text) {
+        let element = document.createElement('a');
+        element.setAttribute('href',
+            'data:text/plain;charset=utf-8, '
+            + encodeURIComponent(text));
+        element.setAttribute('download', file);
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
+
+    download_environment() {
+        let cameras = environment.get_text_file("CAMERA");
+        let samples = environment.get_text_file("SAMPLE");
+        this.download("cameras.txt", cameras);
+        this.download("samples.txt", samples);
+    }
+
 }
 
 let file_processor = new FileProcessor();
