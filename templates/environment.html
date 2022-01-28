@@ -35,10 +35,10 @@
         <div class="wrapper">
             <section>
                 <button class="execute" onclick="document.getElementById('camera_upload').click()">Upload Cameras</button>
-                <button class="execute" onclick="document.getElementById('sample_upload').click()">Upload Samples</button>
-                <button class="execute" onclick="environment.update_environment_based_on_files()">Update Environment</button>
                 <input id="camera_upload" type="file" class="file" accept=".txt"/>
+                <button class="execute" onclick="document.getElementById('sample_upload').click()">Upload Samples</button>
                 <input id="sample_upload" type="file" class="file" accept=".txt"/>
+                <button class="execute" onclick="file_processor.update_environment()">Update Environment</button>
                 <button class="execute" onclick="environment.download_environment()">Download Environment</button>
             </section>
         </div>
@@ -80,5 +80,8 @@
     </script>
     <script src="/static/collapsible.js"></script>
     <script src="/static/environment.js"></script>
+    <script src="/static/file_handling.js"></script>
+    <script src="/static/drawing.js"></script>
+    <script src="/static/sockets.js"></script>
 </body>
 </html>
