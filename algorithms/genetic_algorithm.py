@@ -8,14 +8,14 @@ class GeneticAlgorithm(Solver):
     def __init__(self, board, cameras):
         self.population = 100
         self.generations = 20
-        self.k = 1
+        self.k = 2
         self.crossover_probability = 0.7
-        self.mutation_probability = 1
+        self.mutation_probability = 0.01
         super().__init__(board, cameras)
         self.camera_nodes = get_camera_dictionary(self.camera_nodes)
 
     def initialise_parent(self):
-        genotype = [choice(self.camera_nodes[key]) if random() >= 0.5 else None for key in self.camera_nodes.keys()]
+        genotype = [choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
         parent = Parent(genotype)
         parent.evaluate()
         parent.repair()
@@ -37,7 +37,7 @@ class GeneticAlgorithm(Solver):
 
     def mutate(self, parent):
         for i in range(0, len(parent.genotype)):
-            if random() <= self.mutation_probability:
+            if random() >= self.mutation_probability:
                 parent.genotype[i] = choice(list(self.camera_nodes.values())[i])
 
     def solve(self):
@@ -45,9 +45,6 @@ class GeneticAlgorithm(Solver):
         max_parent = parents[0]
         for i in range(0, self.generations):
             children = []
-            max_child = max(parents, key=lambda parent: parent.score)
-            max_parent = max_child if max_child.score > max_parent.score else max_parent
-            print(max_parent.score)
             while len(children) < self.population:
                 parent_one = self.initialise_parent()
                 parent_two = self.initialise_parent()
@@ -58,6 +55,8 @@ class GeneticAlgorithm(Solver):
                 parent_two.repair()
                 parent_two.evaluate()
                 children.extend([parent_one, parent_two])
+            max_child = max(parents, key=lambda parent: parent.score)
+            max_parent = max_child if max_child.score > max_parent.score else max_parent
             parents = children
         cameras = [camera for camera in max_parent.genotype if camera is not None]
         coverage = round(len(max_parent.coverage) / len(self.evaluator["SAMPLE"]) * 100, 2)
