@@ -8,7 +8,7 @@ class RandomSamplingAlgorithm(Solver):
     def __init__(self, board, cameras):
         super().__init__(board, cameras)
         self.camera_nodes = get_camera_dictionary(self.camera_nodes)
-        self.generations = 100
+        self.generations = 1000
 
     def generate_member(self):
         genotype = [choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
@@ -19,11 +19,13 @@ class RandomSamplingAlgorithm(Solver):
         best_score = 0
         for i in range(0, self.generations):
             candidate = self.generate_member()
-            score = self.evaluate_candidate(candidate)
-            if score > best_score:
+            candidate.repair()
+            candidate.evaluate()
+            if candidate.score > best_score:
                 best_candidate = candidate
-                best_score = score
+                best_score = candidate.score
         cameras = [gene for gene in best_candidate.genotype if gene is not None]
-        coverage = (best_score + len(best_candidate.genotype))/len(best_candidate.genotype)
+        coverage = round(len(best_candidate.coverage) / len(self.evaluator["SAMPLE"]) * 100, 2)
+        coverage = coverage/best_candidate.cameras
         return cameras, coverage
 
