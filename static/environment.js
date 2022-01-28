@@ -1,8 +1,5 @@
-let default_size = 11;
 let drawing = false;
-
-
-let socket = io("http://127.0.0.1:5000/");
+let default_size = 11;
 
 class Camera {
     constructor(camera) {
@@ -36,21 +33,20 @@ class Cell {
 
 
 class Environment {
-    constructor(size, default_type) {
+    constructor() {
         this.canvas = document.getElementById("camera_canvas");
         this.board = [];
         this.cameras = [{
             "range": 8,
             "fov": 90
         }];
-        this.width = size
-        this.height = size
-        this.default_type = default_type;
-        this.selected_type = default_type;
+        this.width = default_size
+        this.height = default_size
+        this.default_type = "EMPTY";
+        this.selected_type = "EMPTY";
         this.update_board();
         this.pixel_resolution = [];
-        this.cameras_file = "";
-        this.samples_file = "";
+        this.files = {};
     }
 
     update_board() {
@@ -152,74 +148,18 @@ class Environment {
         }
     }
 
-    process_text(text) {
-        text = text.split("\n");
-        text = text.slice(1, text.length - 1)
-        for (let i = 0; i < text.length; i++) {
-            text[i] = text[i].split(" ");
-            text[i] = text[i].slice(1, 3);
-            text[i] = text[i].map(number => Math.abs(parseInt(number)));
-        }
-        let set = new Set(text.map(JSON.stringify));
-        text = Array.from(set).map(JSON.parse);
-        text = text.sort(function (a, b) {
-            if (a[0] === b[0]) {
-                return a[1] - b[1];
-            }
-            return a[0] - b[0];
-        });
-        return text;
-    }
 
-    set_camera_file(e) {
-        let camera_reader = new FileReader();
-        camera_reader.onload = function (e) {
-            environment.cameras_file = environment.process_text(e.target.result);
-        };
-        camera_reader.readAsText(e.target.files[0]);
-    }
-
-    set_sample_file(e) {
-        let sample_reader = new FileReader();
-        sample_reader.onload = function (e) {
-            environment.samples_file = environment.process_text(e.target.result);
-        };
-        sample_reader.readAsText(e.target.files[0]);
-    }
-
-    update_environment_based_on_files() {
-        if (!this.cameras_file || !this.samples_file) {
-            return;
-        }
-        let cameras_dimensions = this.cameras_file[this.cameras_file.length - 1];
-        let samples_dimensions = this.samples_file[this.samples_file.length - 1];
-        this.create_board(Math.max(cameras_dimensions[0], samples_dimensions[0])+1,
-            Math.max(cameras_dimensions[1], samples_dimensions[1])+1, this.default_type);
-        this.change_selected_type(document.getElementById("CAMERA"));
-        for(let i=0; i<this.cameras_file.length; i++) {
-            this.board[this.cameras_file[i][0]][this.cameras_file[i][1]].update(environment.selected_type)
-        }
-        this.change_selected_type(document.getElementById("SAMPLE"));
-        for(let i=0; i<this.samples_file.length; i++) {
-            this.board[this.samples_file[i][0]][this.samples_file[i][1]].update(environment.selected_type)
-        }
-        this.update_canvas();
-        this.change_selected_type(document.getElementById("EMPTY"));
-
-    }
 
     get_text_file(type) {
         let text = "";
-        let count = 0;
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 if (this.board[x][y].type === type) {
-                    text += count + " " + this.board[x][y].x + " " + this.board[x][y].y + "\n";
-                    count += 1;
+                    text += this.board[x][y].x + " " + this.board[x][y].y + "\n";
                 }
             }
         }
-        text = count + "\n" + text;
+        text = this.width + this.height + "\n" + text;
         return text
     }
 
@@ -242,6 +182,7 @@ class Environment {
     }
 }
 
+environment = new Environment()
 
 function update_information(node) {
     document.getElementById("coordinates").innerText = "X: " + node.x + ", Y: " + node.y
@@ -267,53 +208,6 @@ function update_information(node) {
     }
 }
 
-function set_event_listeners(environment) {
-    environment.canvas.addEventListener("mousedown", function () {
-        drawing = true
-    })
-    environment.canvas.addEventListener("mouseup", function () {
-        drawing = false
-    })
-    environment.canvas.addEventListener("mousemove", function (e) {
-        let x = environment.normalise(e["layerX"], 0, "x");
-        let y = environment.normalise(e["layerY"], 1, "y");
-        update_information(environment.board[x][y]);
-        if (drawing) {
-            environment.board[x][y].update(environment.selected_type)
-            environment.update_canvas()
-        }
-    })
-    window.onload = window.onresize = function () {
-        environment.update_canvas();
-    }
-}
 
-environment = new Environment(default_size, "EMPTY")
-set_event_listeners(environment)
-
-function send_environment() {
-    environment.clean_selection();
-    let algorithm = document.getElementById("algorithm").value;
-    socket.emit("environment", {"board": environment.board, "cameras": environment.cameras, "algorithm": algorithm});
-}
-
-socket.on("update_board", (message) => {
-    message = JSON.parse(message)
-    let solution = message["solution"]
-    solution.forEach((element) => {
-        let x = element["x"];
-        let y = element["y"];
-        environment.board[x][y].update("SELECTED", element);
-    })
-    environment.update_canvas();
-    document.getElementById("coverage").innerHTML = "Total Coverage: " + Math.floor(message["coverage"] * solution.length) + " %"
-    document.getElementById("coverage_per_camera").innerHTML = "Average Coverage per Camera: " + message["coverage"] + " %"
-})
-
-
-document.getElementById('camera_upload')
-    .addEventListener('change', environment.set_camera_file, false);
-document.getElementById('sample_upload')
-    .addEventListener('change', environment.set_sample_file, false);
 
 
