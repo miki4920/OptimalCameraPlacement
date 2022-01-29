@@ -2,28 +2,35 @@ class DrawingTool {
     constructor() {
         this.canvas = document.getElementById("camera_canvas");
         this.pixel_resolution = [];
+        this.drawing = false;
     }
-}
 
-function set_event_listeners() {
-    environment.canvas.addEventListener("mousedown", function () {
-        drawing = true
-    })
-    environment.canvas.addEventListener("mouseup", function () {
-        drawing = false
-    })
-    environment.canvas.addEventListener("mousemove", function (e) {
-        let x = environment.normalise(e["layerX"], 0, "x");
-        let y = environment.normalise(e["layerY"], 1, "y");
+    start_drawing() {
+        this.drawing = true;
+    }
+
+    stop_drawing() {
+        this.drawing = false;
+    }
+
+    draw(e) {
+        let x = environment.normalise(e["layerX"], 0);
+        let y = environment.normalise(e["layerY"], 1);
         update_information(environment.board[x][y]);
-        if (drawing) {
+        if (this.drawing) {
             environment.board[x][y].update(environment.selected_type)
             environment.update_canvas()
         }
-    })
-    window.onload = window.onresize = function () {
-        environment.update_canvas();
     }
+
+
 }
 
-set_event_listeners()
+let drawing_tool = new DrawingTool();
+
+environment.canvas.addEventListener("mousedown", drawing_tool.start_drawing)
+    environment.canvas.addEventListener("mouseup", drawing_tool.stop_drawing)
+    environment.canvas.addEventListener("mousemove", drawing_tool.draw)
+window.onload = window.onresize = function () {
+        environment.update_canvas();
+}
