@@ -29,15 +29,15 @@ class FileProcessor {
         if (Object.keys(this.files).length !== 2) {
             return
         }
-        environment.create_board(size);
+        drawing_tool.environment.create_board(size);
         for (const [key, value] of Object.entries(this.files)) {
-            environment.selected_type = key;
+            drawing_tool.environment.selected_type = key;
             for (let i = 0; i < value.length; i++) {
-                environment.board[value[i][0]][value[i][1]].update(environment.selected_type)
+                drawing_tool.environment.board[value[i][0]][value[i][1]].update(environment.selected_type)
             }
         }
-        environment.update_canvas();
-        environment.change_selected_type(document.getElementById("EMPTY"));
+        drawing_tool.environment.update_canvas();
+        drawing_tool.environment.change_selected_type(document.getElementById("EMPTY"));
     }
 
     download(file, text) {
@@ -52,8 +52,8 @@ class FileProcessor {
     }
 
     download_environment() {
-        let cameras = environment.get_text_file("CAMERA");
-        let samples = environment.get_text_file("SAMPLE");
+        let cameras = drawing_tool.environment.get_text_file("CAMERA");
+        let samples = drawing_tool.environment.get_text_file("SAMPLE");
         this.download("cameras.txt", cameras);
         this.download("samples.txt", samples);
     }
