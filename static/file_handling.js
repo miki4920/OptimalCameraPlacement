@@ -1,14 +1,12 @@
 function process_text(text) {
     text = text.split("\n");
-    let width = parseInt(text[0]);
-    let height = parseInt(text[1]);
-    let dimensions = {width, height}
-    text = text.slice(2, text.length - 1)
+    let size = parseInt(text[0]);
+    text = text.slice(1, text.length - 1)
     for (let i = 0; i < text.length; i++) {
         text[i] = text[i].split(" ");
         text[i] = text[i].map(number => parseInt(number));
     }
-    return {text, dimensions};
+    return {text, size};
 }
 
 class FileProcessor {
@@ -31,7 +29,7 @@ class FileProcessor {
         if (Object.keys(this.files).length !== 2) {
             return
         }
-        environment.create_board(this.dimensions.width, this.dimensions.height, environment.default_type);
+        environment.create_board(size);
         for (const [key, value] of Object.entries(this.files)) {
             environment.selected_type = key;
             for (let i = 0; i < value.length; i++) {

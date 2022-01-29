@@ -12,7 +12,7 @@ class Camera {
 
 
 class Cell {
-    constructor(x, y, type) {
+    constructor(x, y, type="EMPTY") {
         this.x = x
         this.y = y
         this.type = type
@@ -34,45 +34,37 @@ class Cell {
 
 class Environment {
     constructor() {
-        this.canvas = document.getElementById("camera_canvas");
         this.board = [];
         this.cameras = [{
             "range": 8,
             "fov": 90
         }];
-        this.width = default_size
-        this.height = default_size
-        this.default_type = "EMPTY";
+        this.size = default_size
         this.selected_type = "EMPTY";
-        this.update_board();
+        this.canvas = document.getElementById("camera_canvas");
         this.pixel_resolution = [];
-        this.files = {};
+        this.update_board();
+
+
     }
 
     update_board() {
-        let width = document.getElementById("width").value
-        width = width && !isNaN(width) ? parseInt(width) : default_size;
-        let height = document.getElementById("height").value
-        height = height && !isNaN(height) ? parseInt(height) : default_size;
-        this.create_board(width, height, this.default_type)
+        let size = document.getElementById("size").value
+        size = size && !isNaN(size) ? parseInt(size) : default_size;
+        this.create_board(size)
     }
 
-    create_board(width, height, type) {
-        this.width = width;
-        this.height = height;
+    create_board(size) {
+        this.size = size;
         let map = [];
-        for (let x = 0; x < width; x++) {
+        for (let x = 0; x < size; x++) {
             map[x] = [];
-            for (let y = 0; y < height; y++) {
-                map[x].push(new Cell(x, y, type,))
+            for (let y = 0; y < size; y++) {
+                map[x].push(new Cell(x, y))
             }
         }
         this.board = map;
         this.update_canvas();
-    }
-
-    get_context() {
-        return this.canvas.getContext("2d");
     }
 
     fill_canvas() {
@@ -86,8 +78,8 @@ class Environment {
     update_canvas() {
         this.canvas.width = this.canvas.clientWidth;
         this.canvas.height = this.canvas.clientHeight;
-        this.pixel_resolution = [this.canvas.clientWidth / this.width,
-            this.canvas.clientHeight / this.height];
+        this.pixel_resolution = [this.canvas.clientWidth / this.size,
+            this.canvas.clientHeight / this.size];
         this.fill_canvas();
 
     }
@@ -101,22 +93,13 @@ class Environment {
         this.selected_type = type.value
     }
 
-    normalise(value, index, type) {
+    normalise(value, index) {
         let result = Math.floor(value / this.pixel_resolution[index]);
-        if (type === "x") {
-            if (result > this.width - 1) {
-                return this.width - 1
-            }
-        } else if (type === "y") {
-            if (result > this.height - 1) {
-                return this.height - 1
-            }
-        }
         return result > 0 ? result : 0;
     }
 
     draw(x, y, colour) {
-        let context = this.get_context();
+        let context = this.canvas.getContext("2d");
         context.fillStyle = colour;
         context.fillRect(x * this.pixel_resolution[0], y * this.pixel_resolution[1],
             Math.floor(this.pixel_resolution[0] - 1), Math.floor(this.pixel_resolution[1] - 1));
@@ -125,8 +108,8 @@ class Environment {
     sample() {
         let sampling = document.getElementById("sampling_rate");
         let sampling_rate = parseInt(sampling.value);
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
+        for (let x = 0; x < this.size; x++) {
+            for (let y = 0; y < this.size; y++) {
                 if (this.board[x][y].type === "SAMPLE") {
                     this.board[x][y].update("EMPTY");
                 }
@@ -139,8 +122,8 @@ class Environment {
     }
 
     clean_selection() {
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
+        for (let x = 0; x < this.size; x++) {
+            for (let y = 0; y < this.size; y++) {
                 if (this.board[x][y].type === "SELECTED") {
                     this.board[x][y].update("CAMERA");
                 }
@@ -150,14 +133,14 @@ class Environment {
 
     get_text_file(type) {
         let text = "";
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
+        for (let x = 0; x < this.size; x++) {
+            for (let y = 0; y < this.size; y++) {
                 if (this.board[x][y].type === type) {
                     text += this.board[x][y].x + " " + this.board[x][y].y + "\n";
                 }
             }
         }
-        text = this.width + "\n" + this.height + "\n" + text;
+        text = this.size + "\n" + text;
         return text
     }
 }
