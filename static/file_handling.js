@@ -13,6 +13,7 @@ class FileProcessor {
         this.file = ""
         this.size = 0
     }
+
     set_file(e) {
         let reader = new FileReader();
         reader.onload = function (e) {

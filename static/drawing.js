@@ -5,7 +5,7 @@ class DrawingTool {
         this.canvas = document.getElementById("camera_canvas");
         this.pixel_resolution = [];
         this.drawing = false;
-        this.drawing_types = {"POINT": this.draw_point, "LINE": this.draw_line, "FILL": this.fill}
+        this.drawing_types = {"POINT": this.draw_point, "LINE": this.draw_line, "FILL": this.draw_fill}
         this.drawing_type = "POINT"
         this.previous_line_point = {}
         this.colour_type = "EMPTY";
@@ -43,11 +43,10 @@ class DrawingTool {
     }
 
     start_drawing(e) {
-        if(e.button === 0) {
+        if (e.button === 0) {
             this.drawing = true;
             this.draw(e)
-        }
-        else if(e.button === 2) {
+        } else if (e.button === 2) {
             this.previous_line_point = {}
         }
 
@@ -73,7 +72,7 @@ class DrawingTool {
         })
         document.getElementById(id).classList.add("active_drawing");
         this.drawing_type = id
-        if(this.drawing_type !== "LINE") {
+        if (this.drawing_type !== "LINE") {
             this.previous_line_point = {}
         }
     }
@@ -95,24 +94,30 @@ class DrawingTool {
     }
 
     line(x0, y0, x1, y1, type) {
-       let dx = Math.abs(x1 - x0);
-       let dy = Math.abs(y1 - y0);
-       let sx = (x0 < x1) ? 1 : -1;
-       let sy = (y0 < y1) ? 1 : -1;
-       let err = dx - dy;
+        let dx = Math.abs(x1 - x0);
+        let dy = Math.abs(y1 - y0);
+        let sx = (x0 < x1) ? 1 : -1;
+        let sy = (y0 < y1) ? 1 : -1;
+        let err = dx - dy;
 
-       let self = this;
-       while(true) {
-          this.draw_point(x0, y0, type, self);
-          if ((x0 === x1) && (y0 === y1)) break;
-          let e2 = 2*err;
-          if (e2 > -dy) { err -= dy; x0  += sx; }
-          if (e2 < dx) { err += dx; y0  += sy; }
-       }
-}
+        let self = this;
+        while (true) {
+            this.draw_point(x0, y0, type, self);
+            if ((x0 === x1) && (y0 === y1)) break;
+            let e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y0 += sy;
+            }
+        }
+    }
 
     draw_line(x, y, type, self) {
-        if(Object.keys(self.previous_line_point).length !== 0 && self.previous_line_point["type"] === type) {
+        if (Object.keys(self.previous_line_point).length !== 0 && self.previous_line_point["type"] === type) {
             self.line(self.previous_line_point["x"], self.previous_line_point["y"], x, y, type)
         }
         self.previous_line_point = {"drawing_type": "LINE_START", "type": type, "x": x, "y": y}
@@ -135,9 +140,15 @@ class DrawingTool {
 
 let drawing_tool = new DrawingTool();
 
-drawing_tool.canvas.addEventListener("mousedown", function(e) {drawing_tool.start_drawing(e)})
-drawing_tool.canvas.addEventListener("mouseup", function() {drawing_tool.stop_drawing()})
-drawing_tool.canvas.addEventListener("mousemove", function(e) {drawing_tool.draw(e)})
+drawing_tool.canvas.addEventListener("mousedown", function (e) {
+    drawing_tool.start_drawing(e)
+})
+drawing_tool.canvas.addEventListener("mouseup", function () {
+    drawing_tool.stop_drawing()
+})
+drawing_tool.canvas.addEventListener("mousemove", function (e) {
+    drawing_tool.draw(e)
+})
 window.onload = window.onresize = function () {
     drawing_tool.update_canvas();
 }

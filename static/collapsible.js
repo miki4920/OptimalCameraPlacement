@@ -1,7 +1,7 @@
 let collapsible = document.getElementsByClassName("collapsible");
 
 for (let i = 0; i < collapsible.length; i++) {
-    collapsible[i].onclick = function() {
+    collapsible[i].onclick = function () {
         this.classList.toggle("active_collapsible");
         let content = this.nextElementSibling;
         if (content.style.maxHeight) {
@@ -11,5 +11,5 @@ for (let i = 0; i < collapsible.length; i++) {
             content.style.maxHeight = content.scrollHeight + "px";
             content.style.overflow = "visible";
         }
-  }
+    }
 }

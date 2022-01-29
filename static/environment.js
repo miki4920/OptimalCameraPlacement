@@ -1,5 +1,3 @@
-
-
 class Camera {
     constructor(camera) {
         this.range = camera["camera"]["range"];
@@ -11,7 +9,7 @@ class Camera {
 
 
 class Cell {
-    constructor(x, y, type="EMPTY") {
+    constructor(x, y, type = "EMPTY") {
         this.x = x
         this.y = y
         this.type = type
@@ -81,7 +79,7 @@ class Environment {
         for (let x = 0; x < this.size; x++) {
             for (let y = 0; y < this.size; y++) {
                 let type = this.board[x][y].type
-                type = type==="SELECTED" ? "CAMERA" : type;
+                type = type === "SELECTED" ? "CAMERA" : type;
                 text += this.board[x][y].x + " " + this.board[x][y].y + " " + type + "\n";
 
             }
