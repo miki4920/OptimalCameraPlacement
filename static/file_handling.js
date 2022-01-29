@@ -17,18 +17,13 @@ class FileProcessor {
         let reader = new FileReader();
         reader.onload = function (e) {
             let read_file = process_text(e.target.result);
-            file_processor.file = read_file.text;
-            file_processor.size = read_file.size;
+            drawing_tool.environment.create_board(read_file.size);
+            for (const node of read_file.text) {
+                drawing_tool.environment.board[parseInt(node[0])][parseInt(node[1])].update(node[2])
+            }
+            drawing_tool.update_canvas();
         };
         reader.readAsText(e.target.files[0]);
-    }
-
-    update_environment() {
-        drawing_tool.environment.create_board(this.size);
-        for (const node of this.file) {
-            drawing_tool.environment.board[parseInt(node[0])][parseInt(node[1])].update(node[2])
-        }
-        drawing_tool.update_canvas();
     }
 
     download(file, text) {
