@@ -1,5 +1,4 @@
-let drawing = false;
-let default_size = 11;
+
 
 class Camera {
     constructor(camera) {
@@ -16,13 +15,11 @@ class Cell {
         this.x = x
         this.y = y
         this.type = type
-        this.colour = Colours[type]
         this.camera = null;
     }
 
     update(type, camera = null) {
         this.type = type
-        this.colour = Colours[type]
         if (camera) {
             this.camera = new Camera(camera);
         } else {
@@ -33,25 +30,13 @@ class Cell {
 
 
 class Environment {
-    constructor() {
+    constructor(size) {
         this.board = [];
         this.cameras = [{
             "range": 8,
             "fov": 90
         }];
-        this.size = default_size
-        this.selected_type = "EMPTY";
-        this.canvas = document.getElementById("camera_canvas");
-        this.pixel_resolution = [];
-        this.update_board();
-
-
-    }
-
-    update_board() {
-        let size = document.getElementById("size").value
-        size = size && !isNaN(size) ? parseInt(size) : default_size;
-        this.create_board(size)
+        this.size = size
     }
 
     create_board(size) {
@@ -64,45 +49,6 @@ class Environment {
             }
         }
         this.board = map;
-        this.update_canvas();
-    }
-
-    fill_canvas() {
-        this.board.forEach((row) => {
-            row.forEach((element) => {
-                this.draw(element.x, element.y, element.colour)
-            })
-        })
-    }
-
-    update_canvas() {
-        this.canvas.width = this.canvas.clientWidth;
-        this.canvas.height = this.canvas.clientHeight;
-        this.pixel_resolution = [this.canvas.clientWidth / this.size,
-            this.canvas.clientHeight / this.size];
-        this.fill_canvas();
-
-    }
-
-    change_selected_type(type) {
-        let elements = Array.from(document.getElementsByClassName("active_option"))
-        elements.forEach((element) => {
-            element.classList.remove("active_option")
-        })
-        type.classList.add("active_option");
-        this.selected_type = type.value
-    }
-
-    normalise(value, index) {
-        let result = Math.floor(value / this.pixel_resolution[index]);
-        return result > 0 ? result : 0;
-    }
-
-    draw(x, y, colour) {
-        let context = this.canvas.getContext("2d");
-        context.fillStyle = colour;
-        context.fillRect(x * this.pixel_resolution[0], y * this.pixel_resolution[1],
-            Math.floor(this.pixel_resolution[0] - 1), Math.floor(this.pixel_resolution[1] - 1));
     }
 
     sample() {
@@ -118,7 +64,6 @@ class Environment {
                 }
             }
         }
-        this.update_canvas();
     }
 
     clean_selection() {
@@ -144,8 +89,6 @@ class Environment {
         return text
     }
 }
-
-environment = new Environment()
 
 function update_information(node) {
     document.getElementById("coordinates").innerText = "X: " + node.x + ", Y: " + node.y
