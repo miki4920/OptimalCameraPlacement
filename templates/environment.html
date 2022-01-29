@@ -32,10 +32,8 @@
         <button class="collapsible">Files</button>
         <div class="wrapper">
             <section>
-                <button class="execute" onclick="document.getElementById('camera_upload').click()">Upload Cameras</button>
-                <input id="camera_upload" type="file" class="file" accept=".txt"/>
-                <button class="execute" onclick="document.getElementById('sample_upload').click()">Upload Samples</button>
-                <input id="sample_upload" type="file" class="file" accept=".txt"/>
+                <button class="execute" onclick="document.getElementById('environment_upload').click()">Upload Environment</button>
+                <input id="environment_upload" type="file" class="file" accept=".txt"/>
                 <button class="execute" onclick="file_processor.update_environment()">Update Environment</button>
                 <button class="execute" onclick="file_processor.download_environment()">Download Environment</button>
             </section>
