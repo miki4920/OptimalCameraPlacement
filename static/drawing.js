@@ -124,6 +124,26 @@ class DrawingTool {
         self.draw_point(x, y, type, self)
     }
 
+    fill(x, y, initial_type, replacement_type, self) {
+        let size = self.environment.size
+        if ((x < 0) || (x > size-1) || (y < 0) || (y > size-1)) return;
+        if (self.environment.board[x][y].type !== initial_type) return;
+        self.environment.board[x][y].update(replacement_type);
+        self.fill(x - 1, y - 1, initial_type, replacement_type, self);
+        self.fill(x - 1, y, initial_type, replacement_type, self);
+        self.fill(x - 1, y + 1, initial_type, replacement_type, self);
+        self.fill(x, y - 1, initial_type, replacement_type, self);
+        self.fill(x, y + 1, initial_type, replacement_type, self);
+        self.fill(x + 1, y - 1, initial_type, replacement_type, self);
+        self.fill(x + 1, y, initial_type, replacement_type, self);
+        self.fill(x + 1, y + 1, initial_type, replacement_type, self);
+    }
+
+    draw_fill(x, y, replacement_type, self) {
+        let initial_type = self.environment.board[x][y].type
+        self.fill(x, y, initial_type, replacement_type, self)
+    }
+
     draw(e) {
         let x = this.normalise(e["layerX"], 0);
         let y = this.normalise(e["layerY"], 1);
