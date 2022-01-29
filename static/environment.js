@@ -76,13 +76,14 @@ class Environment {
         }
     }
 
-    get_text_file(type) {
+    get_text_file() {
         let text = "";
         for (let x = 0; x < this.size; x++) {
             for (let y = 0; y < this.size; y++) {
-                if (this.board[x][y].type === type) {
-                    text += this.board[x][y].x + " " + this.board[x][y].y + "\n";
-                }
+                let type = this.board[x][y].type
+                type = type==="SELECTED" ? "CAMERA" : type;
+                text += this.board[x][y].x + " " + this.board[x][y].y + " " + type + "\n";
+
             }
         }
         text = this.size + "\n" + text;

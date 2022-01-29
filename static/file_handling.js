@@ -4,40 +4,31 @@ function process_text(text) {
     text = text.slice(1, text.length - 1)
     for (let i = 0; i < text.length; i++) {
         text[i] = text[i].split(" ");
-        text[i] = text[i].map(number => parseInt(number));
     }
     return {text, size};
 }
 
 class FileProcessor {
     constructor() {
-        this.files = {}
-        this.dimensions = {}
+        this.file = ""
+        this.size = 0
     }
     set_file(e) {
         let reader = new FileReader();
-        let type = e.currentTarget.file_type;
         reader.onload = function (e) {
             let read_file = process_text(e.target.result);
-            file_processor.files[type] = read_file.text;
-            file_processor.dimensions = read_file.dimensions
+            file_processor.file = read_file.text;
+            file_processor.size = read_file.size;
         };
         reader.readAsText(e.target.files[0]);
     }
 
     update_environment() {
-        if (Object.keys(this.files).length !== 2) {
-            return
+        drawing_tool.environment.create_board(this.size);
+        for (const node of this.file) {
+            drawing_tool.environment.board[parseInt(node[0])][parseInt(node[1])].update(node[2])
         }
-        drawing_tool.environment.create_board(size);
-        for (const [key, value] of Object.entries(this.files)) {
-            drawing_tool.environment.selected_type = key;
-            for (let i = 0; i < value.length; i++) {
-                drawing_tool.environment.board[value[i][0]][value[i][1]].update(environment.selected_type)
-            }
-        }
-        drawing_tool.environment.update_canvas();
-        drawing_tool.environment.change_selected_type(document.getElementById("EMPTY"));
+        drawing_tool.update_canvas();
     }
 
     download(file, text) {
@@ -52,19 +43,13 @@ class FileProcessor {
     }
 
     download_environment() {
-        let cameras = drawing_tool.environment.get_text_file("CAMERA");
-        let samples = drawing_tool.environment.get_text_file("SAMPLE");
-        this.download("cameras.txt", cameras);
-        this.download("samples.txt", samples);
+        let nodes = drawing_tool.environment.get_text_file();
+        this.download(drawing_tool.environment.size + "_environment.txt", nodes);
     }
 
 }
 
 let file_processor = new FileProcessor();
 
-let camera = document.getElementById('camera_upload');
-camera.addEventListener('change', file_processor.set_file, false);
-camera.file_type = "CAMERA";
-let sample = document.getElementById('sample_upload');
-sample.addEventListener('change', file_processor.set_file, false)
-sample.file_type = "SAMPLE";
+let environment_uploader = document.getElementById('environment_upload');
+environment_uploader.addEventListener('change', file_processor.set_file, false);
