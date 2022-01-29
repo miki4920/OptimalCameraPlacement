@@ -1,3 +1,10 @@
+class DrawingTool {
+    constructor() {
+        this.canvas = document.getElementById("camera_canvas");
+        this.pixel_resolution = [];
+    }
+}
+
 function set_event_listeners() {
     environment.canvas.addEventListener("mousedown", function () {
         drawing = true
