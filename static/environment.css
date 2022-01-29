@@ -88,7 +88,7 @@ section {
     border:solid #66FCF1 4px
 }
 
-.active_option {
+.active_option, .active_drawing {
     border: solid #45A29E 4px;
 }
 
