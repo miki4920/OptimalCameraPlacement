@@ -30,10 +30,10 @@ class Cell {
 class Environment {
     constructor(size) {
         this.board = [];
-        this.cameras = [{
+        this.cameras = {"Long Range": {
             "range": 8,
             "fov": 90
-        }];
+        }};
         this.size = size
     }
 

@@ -144,4 +144,30 @@ button {
     display: none;
 }
 
+ul {
+    display: flex;
+    flex-basis: 100%;
+    margin: 4px 4px;
+}
 
+li {
+    display: flex;
+    flex-basis: 100%;
+    background-color: #333C46;
+    border-radius: 8px;
+}
+
+li p {
+    margin: 0 4px;
+    padding: 4px 0;
+}
+
+.delete_camera {
+    padding: 8px 8px;
+    border-radius: 8px;
+    border: solid #0B0C10 2px;
+}
+
+.delete_camera:hover {
+    border: solid #45A29E 2px;
+}

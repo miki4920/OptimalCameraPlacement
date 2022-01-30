@@ -18,6 +18,33 @@ class DrawingTool {
         this.update_canvas()
     }
 
+    remove_camera(name) {
+        delete this.environment.cameras[name];
+    }
+
+    update_cameras() {
+        if (Object.keys(this.environment.cameras).length > 0) {
+            let list = document.getElementById("cameras")
+            list.innerHTML = "";
+            for (let name of Object.keys(this.environment.cameras)) {
+                let camera = this.environment.cameras[name];
+                let camera_element = document.createElement("li");
+                let paragraph = document.createElement("p")
+                paragraph.innerText = `Name: ${name}\nRange: ${camera["range"]}\nField of View: ${camera["fov"]}`
+                let button = document.createElement("button")
+                button.innerText = "X";
+                button.classList.add("delete_camera")
+                button.onclick = function () {
+                    drawing_tool.remove_camera(name)
+                    drawing_tool.update_cameras()
+                };
+                camera_element.appendChild(paragraph)
+                camera_element.appendChild(button)
+                list.appendChild(camera_element)
+            }
+        }
+    }
+
     refresh_canvas() {
         let self = this
         this.environment.board.forEach((row) => {
@@ -126,7 +153,7 @@ class DrawingTool {
 
     fill(x, y, initial_type, replacement_type, self) {
         let size = self.environment.size
-        if ((x < 0) || (x > size-1) || (y < 0) || (y > size-1)) return;
+        if ((x < 0) || (x > size - 1) || (y < 0) || (y > size - 1)) return;
         if (self.environment.board[x][y].type !== initial_type) return;
         self.environment.board[x][y].update(replacement_type);
         self.fill(x - 1, y - 1, initial_type, replacement_type, self);
@@ -178,4 +205,5 @@ drawing_tool.canvas.addEventListener("mousemove", function (e) {
 })
 window.onload = window.onresize = function () {
     drawing_tool.update_canvas();
+    drawing_tool.update_cameras()
 }
