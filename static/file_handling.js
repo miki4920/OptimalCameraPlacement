@@ -28,14 +28,10 @@ class FileProcessor {
     }
 
     download(file, text) {
-        let element = document.createElement('a');
-        element.setAttribute('href',
-            'data:text/plain;charset=utf-8, '
-            + encodeURIComponent(text));
-        element.setAttribute('download', file);
-        document.body.appendChild(element);
+        let element = document.createElement("a");
+        element.href = window.URL.createObjectURL(new Blob([text], {type: "text/plain"}));
+        element.download = file;
         element.click();
-        document.body.removeChild(element);
     }
 
     download_environment() {
