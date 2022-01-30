@@ -155,6 +155,13 @@ class DrawingTool {
         }
     }
 
+    clean_board_of_cameras() {
+        this.environment.clean_selection();
+        document.getElementById("coverage").innerHTML = "Total Coverage: " + 0 + " %"
+        document.getElementById("coverage_per_camera").innerHTML = "Average Coverage per Camera: " + 0 + " %"
+        this.update_canvas();
+    }
+
 
 }
 
