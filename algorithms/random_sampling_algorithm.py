@@ -25,6 +25,7 @@ class RandomSamplingAlgorithm(Solver):
                 best_candidate = candidate
                 best_score = candidate.score
         cameras = [gene for gene in best_candidate.genotype if gene is not None]
+        [[other_camera.update(camera) for other_camera in cameras] for camera in cameras]
         coverage = round(len(best_candidate.coverage) / len(self.evaluator["SAMPLE"]) * 100, 2)
         coverage = coverage/best_candidate.cameras
         return cameras, coverage
