@@ -20,10 +20,10 @@ def index():
 
 
 @socket.on("environment")
-def environment(message: Dict[str, str]):
+def environment(message: Dict[str, Dict[str, str]]):
     algorithm = message.get("algorithm")
     board = message.get("board")
-    cameras = message.get("cameras")
+    cameras = list(message.get("cameras").values())
     algorithm = algorithms.get(algorithm)
     if not algorithm:
         return
