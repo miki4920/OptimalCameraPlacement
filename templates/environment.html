@@ -32,7 +32,13 @@
     <button class="collapsible">Cameras</button>
     <div class="wrapper">
         <section>
-            <button class="execute">Add a New Camera</button>
+            <label for="name">Camera Name</label>
+            <input id="name" autocomplete="off">
+            <label for="input_range">Range</label>
+            <input id="input_range" autocomplete="off">
+            <label for="input_fov">Field of View</label>
+            <input id="input_fov" autocomplete="off">
+            <button class="execute" onclick="drawing_tool.camera_handler.add_camera()">Add a New Camera</button>
             <ul id="cameras">
             </ul>
         </section>
@@ -98,6 +104,7 @@
 <script src="/static/collapsible.js"></script>
 <script src="/static/environment.js"></script>
 <script src="/static/file_handling.js"></script>
+<script src="/static/camera_handler.js"></script>
 <script src="/static/drawing.js"></script>
 <script src="/static/sockets.js"></script>
 </body>

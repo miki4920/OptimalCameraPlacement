@@ -5,7 +5,7 @@ function send_environment() {
     let algorithm = document.getElementById("algorithm").value;
     socket.emit("environment", {
         "board": drawing_tool.environment.board,
-        "cameras": drawing_tool.environment.cameras,
+        "cameras": drawing_tool.camera_handler.get_cookie(),
         "algorithm": algorithm
     });
 }

@@ -146,8 +146,9 @@ button {
 
 ul {
     display: flex;
+    flex-direction: column;
     flex-basis: 100%;
-    margin: 4px 4px;
+    margin: 0 4px;
 }
 
 li {
@@ -155,6 +156,7 @@ li {
     flex-basis: 100%;
     background-color: #333C46;
     border-radius: 8px;
+    margin: 2px 0;
 }
 
 li p {
