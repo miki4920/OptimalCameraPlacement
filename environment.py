@@ -8,7 +8,6 @@ from option_dictionaries.tile_options import tiles
 class Node:
     def __init__(self, coordinates, node_type):
         self.coordinates = coordinates
-        self.coordinates_hash = self.coordinates.tobytes()
         self.coordinates_tuple = tuple(self.coordinates.tolist())
         self.node_type = node_type
 
@@ -85,6 +84,8 @@ class Evaluator:
         collision_constrain = self.check_collision(start, end)
         if not collision_constrain:
             return []
+        if float(camera["fov"]) >= 360.0:
+            return [0, ]
         angle_constrain = self.check_angle(start, end, float(camera["fov"])/2, orientations)
         if not angle_constrain:
             return []

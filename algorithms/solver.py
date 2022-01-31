@@ -23,10 +23,17 @@ class CameraNode(Node):
                 "orientation": self.orientation,
                 "camera": self.camera,
                 "nodes": [f" {node}"
-                          for node in self.camera_set]}
+                          for node in sorted(self.camera_set)]}
 
     def update(self, other):
-        self.camera_set -= other.camera_set
+        if self.coordinates_tuple == other.coordinates_tuple and self.orientation == other.orientation and tuple(
+                self.camera.values()) == tuple(other.camera.values()):
+            return
+        if self.coordinates_tuple == other.coordinates_tuple:
+            self.camera_set = set()
+
+        else:
+            self.camera_set -= other.camera_set
 
     def add_node(self, position):
         self.camera_set.add(position)
@@ -48,9 +55,9 @@ class Solver:
                     sample = self.evaluator[sample]
                     for orientation in self.evaluator.visible(camera_node.coordinates, sample.coordinates,
                                                               camera, self.orientations):
-                        camera_hash = camera_node.hash() + (orientation, )
+                        camera_hash = camera_node.hash() + (orientation, camera["range"], camera["fov"])
                         if camera_hash not in cameras_dictionary:
-                            cameras_dictionary[camera_hash] = CameraNode(camera_node, camera, orientation)
+                            cameras_dictionary[camera_hash] = CameraNode(
+                                camera_node, camera, orientation)
                         cameras_dictionary[camera_hash].add_node(sample.hash())
         return list(cameras_dictionary.values())
-
