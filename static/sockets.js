@@ -1,7 +1,6 @@
 let socket = io("http://127.0.0.1:5000/");
 
 function send_environment() {
-    drawing_tool.environment.clean_selection();
     let algorithm = document.getElementById("algorithm").value;
     socket.emit("environment", {
         "board": drawing_tool.environment.board,
@@ -11,6 +10,7 @@ function send_environment() {
 }
 
 socket.on("update_board", (message) => {
+    drawing_tool.environment.clean_selection();
     message = JSON.parse(message)
     let solution = message["solution"]
     solution.forEach((element) => {
