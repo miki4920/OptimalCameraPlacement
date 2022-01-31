@@ -59,6 +59,7 @@ class GeneticAlgorithm(Solver):
             max_parent = max_child if max_child.score > max_parent.score else max_parent
             parents = children
         cameras = [camera for camera in max_parent.genotype if camera is not None]
+        [[other_camera.update(camera) for other_camera in cameras] for camera in cameras]
         coverage = round(len(max_parent.coverage) / len(self.evaluator["SAMPLE"]) * 100, 2)
         coverage = coverage/max_parent.cameras
         return cameras, coverage
