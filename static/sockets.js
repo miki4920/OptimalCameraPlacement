@@ -2,10 +2,12 @@ let socket = io("http://127.0.0.1:5000/");
 
 function send_environment() {
     let algorithm = document.getElementById("algorithm").value;
+    let objective = document.getElementById("objective").value;
     socket.emit("environment", {
         "board": drawing_tool.environment.board,
         "cameras": drawing_tool.camera_handler.get_cookie(),
-        "algorithm": algorithm
+        "algorithm": algorithm,
+        "objective": objective
     });
 }
 
