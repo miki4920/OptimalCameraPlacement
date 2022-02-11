@@ -5,18 +5,18 @@ from algorithms.population_helpers import Parent, get_camera_dictionary
 
 
 class GeneticAlgorithm(Solver):
-    def __init__(self, board, cameras):
+    def __init__(self, board, cameras, objective):
         self.population = 100
         self.generations = 20
-        self.k = 2
+        self.k = 5
         self.crossover_probability = 0.7
         self.mutation_probability = 0.01
-        super().__init__(board, cameras)
+        super().__init__(board, cameras, objective)
         self.camera_nodes = get_camera_dictionary(self.camera_nodes)
 
     def initialise_parent(self):
         genotype = [choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
-        parent = Parent(genotype)
+        parent = Parent(genotype, self.objective)
         parent.evaluate()
         parent.repair()
         return parent

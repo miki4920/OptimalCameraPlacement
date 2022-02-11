@@ -5,14 +5,14 @@ from algorithms.population_helpers import get_camera_dictionary, Parent
 
 
 class RandomSamplingAlgorithm(Solver):
-    def __init__(self, board, cameras):
-        super().__init__(board, cameras)
+    def __init__(self, board, cameras, objective):
+        super().__init__(board, cameras, objective)
         self.camera_nodes = get_camera_dictionary(self.camera_nodes)
         self.generations = 1000
 
     def generate_member(self):
         genotype = [choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
-        return Parent(genotype)
+        return Parent(genotype, self.objective)
 
     def solve(self):
         best_candidate = None

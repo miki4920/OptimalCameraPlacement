@@ -4,8 +4,8 @@ from algorithms.solver import Solver
 
 
 class HillClimbingAlgorithm(Solver):
-    def __init__(self, board, cameras):
-        super().__init__(board, cameras)
+    def __init__(self, board, cameras, objective):
+        super().__init__(board, cameras, objective)
 
     def get_maximum_indexes(self):
         score = self.camera_nodes[-1]
@@ -14,7 +14,7 @@ class HillClimbingAlgorithm(Solver):
 
     def update_evaluated_cameras(self, selected_node):
         [node.update(selected_node) for node in self.camera_nodes]
-        self.camera_nodes = [node for node in self.camera_nodes if len(node) > 0]
+        self.camera_nodes = [node for node in self.camera_nodes if len(node) >= self.objective]
         self.camera_nodes = sorted(self.camera_nodes)
 
     def solve(self):
