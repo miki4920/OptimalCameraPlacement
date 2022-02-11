@@ -20,14 +20,15 @@ def index():
 
 
 @socket.on("environment")
-def environment(message: Dict[str, Dict[str, str]]):
+def environment(message):
     algorithm = message.get("algorithm")
     board = message.get("board")
     cameras = list(message.get("cameras").values())
     algorithm = algorithms.get(algorithm)
+    objective = int(message.get("objective"))
     if not algorithm:
         return
-    algorithm = algorithm(board, cameras)
+    algorithm = algorithm(board, cameras, objective)
     solution, coverage = algorithm.solve()
     solution = [camera.json() for camera in solution] if solution else {}
     data = {"solution": solution, "coverage": round(coverage, 2)}

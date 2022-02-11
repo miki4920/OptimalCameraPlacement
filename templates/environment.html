@@ -59,10 +59,16 @@
             <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate"
                    oninput="drawing_tool.sample()">
             <label for="algorithm">Algorithm Selection: </label>
-            <select name="algorithm" id="algorithm">
+            <select name="algorithm" id="algorithm" onchange="display_objective()" onload="display_objective()">
                 {% for key in algorithm_options %}
                     <option value="{{ key }}">{{ capitalise(key) }}</option>
                 {% endfor %}
+            </select>
+            <label for="objective" id="objective_label">Objective:</label>
+            <select name="objective" id="objective">
+                <option value="1">Optimise For Coverage</option>
+                <option value="3">Balance Coverage and Camera Count</option>
+                <option value="5">Optimise For Camera Count</option>
             </select>
             <button onclick="send_environment()" class="execute">Place Cameras</button>
             <button onclick="drawing_tool.clean_board_of_cameras()" class="execute">Clear Cameras</button>
