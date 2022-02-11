@@ -181,3 +181,4 @@ window.onload = window.onresize = function () {
     drawing_tool.update_canvas();
     drawing_tool.camera_handler.update_cameras()
 }
+
