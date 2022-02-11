@@ -40,10 +40,11 @@ class CameraNode(Node):
 
 
 class Solver:
-    def __init__(self, board, cameras):
+    def __init__(self, board, cameras, objective):
         self.orientations = (0, 45, 90, 135, 180, 225, 270, 315)
         self.cameras = cameras
         self.evaluator = Evaluator(board)
+        self.objective = objective
         self.camera_nodes = sorted(self.evaluated_cameras())
 
     def evaluated_cameras(self):
