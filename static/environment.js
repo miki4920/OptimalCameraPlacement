@@ -45,6 +45,16 @@ class Environment {
         this.board = map;
     }
 
+    parse_board() {
+        let board = []
+        for (let x = 0; x < this.size; x++) {
+            for (let y = 0; y < this.size; y++) {
+                board.push(this.board[x][y].type)
+            }
+        }
+        return board;
+    }
+
     sample() {
         let sampling = document.getElementById("sampling_rate");
         let sampling_rate = parseInt(sampling.value);

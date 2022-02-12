@@ -16,7 +16,7 @@ class FileProcessor {
 
     set_file(e) {
         let reader = new FileReader();
-        reader.onload = function (e) {
+        reader.onload = (e) => {
             let environment_uploader = document.getElementById('environment_upload');
             environment_uploader.value = "";
             let read_file = process_text(e.target.result);
