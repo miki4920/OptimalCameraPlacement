@@ -16,7 +16,7 @@ class GeneticAlgorithm(Solver):
 
     def initialise_parent(self):
         genotype = [choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
-        parent = Parent(genotype, self.objective)
+        parent = Parent(genotype, self.objective-(self.objective//2))
         parent.evaluate()
         parent.repair()
         return parent

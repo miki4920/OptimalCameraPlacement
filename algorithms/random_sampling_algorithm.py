@@ -12,7 +12,7 @@ class RandomSamplingAlgorithm(Solver):
 
     def generate_member(self):
         genotype = [choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
-        return Parent(genotype, self.objective)
+        return Parent(genotype, self.objective-(self.objective//2))
 
     def solve(self):
         best_candidate = None
