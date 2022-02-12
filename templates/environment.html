@@ -59,7 +59,7 @@
             <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate"
                    oninput="drawing_tool.sample()">
             <label for="algorithm">Algorithm Selection: </label>
-            <select name="algorithm" id="algorithm" onchange="display_objective()" onload="display_objective()">
+            <select name="algorithm" id="algorithm">
                 {% for key in algorithm_options %}
                     <option value="{{ key }}">{{ capitalise(key) }}</option>
                 {% endfor %}
@@ -98,6 +98,7 @@
             </button>
             <button class="option" id="LINE" onclick="drawing_tool.change_selected_drawing(this.id)">LINE</button>
             <button class="option" id="FILL" onclick="drawing_tool.change_selected_drawing(this.id)">FILL</button>
+            <button class="option" id="UNDO" onclick="drawing_tool.undo()">UNDO</button>
         </section>
     </div>
 </aside>

@@ -5,13 +5,13 @@ class DrawingTool {
         this.canvas = document.getElementById("camera_canvas");
         this.pixel_resolution = [];
         this.drawing = false;
-        this.drawing_types = {"POINT": this.draw_point, "LINE": this.draw_line, "FILL": this.draw_fill}
         this.drawing_type = "POINT"
         this.previous_line_point = {}
         this.colour_type = "EMPTY";
         this.environment = new Environment();
         this.environment.create_board(default_size)
         this.camera_handler = new CameraHandler();
+        this.history = [];
     }
 
     sample() {
@@ -20,10 +20,9 @@ class DrawingTool {
     }
 
     refresh_canvas() {
-        let self = this
         this.environment.board.forEach((row) => {
             row.forEach((element) => {
-                this.draw_point_on_canvas(element.x, element.y, element.type, self)
+                this.draw_point_on_canvas(element.x, element.y, element.type)
             })
         })
     }
@@ -90,8 +89,8 @@ class DrawingTool {
             this.pixel_resolution[0] - 1, this.pixel_resolution[1] - 1);
     }
 
-    draw_point(x, y, type, self) {
-        self.environment.board[x][y].update(type)
+    draw_point(x, y, type) {
+        this.environment.board[x][y].update(type)
     }
 
     line(x0, y0, x1, y1, type) {
@@ -100,10 +99,8 @@ class DrawingTool {
         let sx = (x0 < x1) ? 1 : -1;
         let sy = (y0 < y1) ? 1 : -1;
         let err = dx - dy;
-
-        let self = this;
         while (true) {
-            this.draw_point(x0, y0, type, self);
+            this.draw_point(x0, y0, type);
             if ((x0 === x1) && (y0 === y1)) break;
             let e2 = 2 * err;
             if (e2 > -dy) {
@@ -117,32 +114,35 @@ class DrawingTool {
         }
     }
 
-    draw_line(x, y, type, self) {
-        if (Object.keys(self.previous_line_point).length !== 0 && self.previous_line_point["type"] === type) {
-            self.line(self.previous_line_point["x"], self.previous_line_point["y"], x, y, type)
+    draw_line(x, y, type) {
+        if (Object.keys(this.previous_line_point).length !== 0 && this.previous_line_point["type"] === type) {
+            this.line(this.previous_line_point["x"], this.previous_line_point["y"], x, y, type)
         }
-        self.previous_line_point = {"drawing_type": "LINE_START", "type": type, "x": x, "y": y}
-        self.draw_point(x, y, type, self)
+        this.previous_line_point = {"drawing_type": "LINE_START", "type": type, "x": x, "y": y}
+        this.draw_point(x, y, type)
     }
 
-    fill(x, y, initial_type, replacement_type, self) {
-        let size = self.environment.size
+    fill(x, y, initial_type, replacement_type) {
+        let size = this.environment.size
         if ((x < 0) || (x > size - 1) || (y < 0) || (y > size - 1)) return;
-        if (self.environment.board[x][y].type !== initial_type) return;
-        self.environment.board[x][y].update(replacement_type);
-        self.fill(x - 1, y - 1, initial_type, replacement_type, self);
-        self.fill(x - 1, y, initial_type, replacement_type, self);
-        self.fill(x - 1, y + 1, initial_type, replacement_type, self);
-        self.fill(x, y - 1, initial_type, replacement_type, self);
-        self.fill(x, y + 1, initial_type, replacement_type, self);
-        self.fill(x + 1, y - 1, initial_type, replacement_type, self);
-        self.fill(x + 1, y, initial_type, replacement_type, self);
-        self.fill(x + 1, y + 1, initial_type, replacement_type, self);
+        if (this.environment.board[x][y].type !== initial_type) return;
+        this.environment.board[x][y].update(replacement_type);
+        this.fill(x - 1, y - 1, initial_type, replacement_type);
+        this.fill(x - 1, y, initial_type, replacement_type);
+        this.fill(x - 1, y + 1, initial_type, replacement_type);
+        this.fill(x, y - 1, initial_type, replacement_type);
+        this.fill(x, y + 1, initial_type, replacement_type);
+        this.fill(x + 1, y - 1, initial_type, replacement_type);
+        this.fill(x + 1, y, initial_type, replacement_type);
+        this.fill(x + 1, y + 1, initial_type, replacement_type);
     }
 
-    draw_fill(x, y, replacement_type, self) {
-        let initial_type = self.environment.board[x][y].type
-        self.fill(x, y, initial_type, replacement_type, self)
+    draw_fill(x, y, replacement_type) {
+        let initial_type = this.environment.board[x][y].type
+        if(initial_type === replacement_type) {
+            return;
+        }
+        this.fill(x, y, initial_type, replacement_type)
     }
 
     draw(e) {
@@ -150,10 +150,40 @@ class DrawingTool {
         let y = this.normalise(e["layerY"], 1);
         update_information(this.environment.board[x][y]);
         if (this.drawing) {
-            let self = this
-            this.drawing_types[this.drawing_type](x, y, this.colour_type, self)
+            let board = this.environment.parse_board()
+            if(this.history.length === 0 || board.join("") !== this.history[this.history.length-1].join("")) {
+                this.history.push(board)
+            }
+
+            switch (this.drawing_type) {
+                case "POINT":
+                    this.draw_point(x, y, this.colour_type);
+                    break;
+                case "LINE":
+                    this.draw_line(x, y, this.colour_type);
+                    break;
+                case "FILL":
+                    this.draw_fill(x, y, this.colour_type)
+            }
             this.update_canvas()
         }
+    }
+
+    undo() {
+        if(this.history.length === 0) {
+            return;
+        }
+        let board = this.history.pop();
+        let environment = this.environment.parse_board().join("");
+        if(board.join("") == environment) {
+            board = this.history.pop();
+        }
+        for (let x = 0; x < this.environment.size; x++) {
+            for (let y = 0; y < this.environment.size; y++) {
+                this.environment.board[x][y].update(board[x*this.environment.size+y])
+            }
+        }
+        this.update_canvas()
     }
 
     clean_board_of_cameras() {
@@ -168,16 +198,16 @@ class DrawingTool {
 
 let drawing_tool = new DrawingTool();
 
-drawing_tool.canvas.addEventListener("mousedown", function (e) {
+drawing_tool.canvas.addEventListener("mousedown", (e) => {
     drawing_tool.start_drawing(e)
 })
-drawing_tool.canvas.addEventListener("mouseup", function () {
+drawing_tool.canvas.addEventListener("mouseup", () =>{
     drawing_tool.stop_drawing()
 })
-drawing_tool.canvas.addEventListener("mousemove", function (e) {
+drawing_tool.canvas.addEventListener("mousemove",(e) => {
     drawing_tool.draw(e)
 })
-window.onload = window.onresize = function () {
+window.onload = window.onresize = () => {
     drawing_tool.update_canvas();
     drawing_tool.camera_handler.update_cameras()
 }
