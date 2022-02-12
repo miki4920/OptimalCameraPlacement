@@ -15,14 +15,16 @@ class NsgaTwo(Solver):
 
     def initialise_parent(self):
         genotype = [choice(self.camera_nodes[key]) for key in self.camera_nodes.keys()]
-        parent = Parent(genotype)
+        parent = Parent(genotype, self.objective)
         parent.evaluate()
         parent.repair()
         return parent
 
-    @staticmethod
-    def non_dominated_sort(parents):
-        return sorted(parents, key=lambda parent: (parent.score[0], parent.score[1]))
+    def tournament_selection(self, parents):
+        tournament_population = []
+        for i in range(0, self.k):
+            tournament_population.append(choice(parents))
+        return max(tournament_population, key=lambda parent: parent.score)
 
     def crossover(self, parent_one, parent_two):
         if random() > self.crossover_probability:
@@ -39,7 +41,6 @@ class NsgaTwo(Solver):
 
     def solve(self):
         parents = [self.initialise_parent() for _ in range(self.population)]
-        pareto_front = []
         max_parent = parents[0]
         for i in range(0, self.generations):
             children = []
@@ -59,5 +60,5 @@ class NsgaTwo(Solver):
         cameras = [camera for camera in max_parent.genotype if camera is not None]
         [[other_camera.update(camera) for other_camera in cameras] for camera in cameras]
         coverage = round(len(max_parent.coverage) / len(self.evaluator["SAMPLE"]) * 100, 2)
-        coverage = coverage / max_parent.cameras
+        coverage = coverage/max_parent.cameras
         return cameras, coverage
