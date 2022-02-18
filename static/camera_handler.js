@@ -20,7 +20,7 @@ class CameraHandler {
         let dictionary = this.get_cookie();
         dictionary[name] = {"range": range, "fov": fov}
         this.set_cookie(dictionary);
-        this.update_cameras();
+        this.update_cameras(true);
     }
 
     remove_camera(name) {
@@ -29,7 +29,7 @@ class CameraHandler {
         this.set_cookie(cameras);
     }
 
-    update_cameras() {
+    update_cameras(adding_camera=false) {
         if (document.cookie.length > 0) {
             let cameras = this.get_cookie()
             let list = document.getElementById("cameras")
@@ -49,6 +49,9 @@ class CameraHandler {
                 camera_element.appendChild(paragraph)
                 camera_element.appendChild(button)
                 list.appendChild(camera_element)
+            }
+            if(adding_camera) {
+                document.getElementById("cameras_wrapper").style.maxHeight = document.getElementById("cameras_wrapper").scrollHeight + "px";
             }
         }
         else {
