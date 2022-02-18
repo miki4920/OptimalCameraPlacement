@@ -55,6 +55,22 @@ class Environment {
         return board;
     }
 
+    sample_point(x, y, sampling_rate, size) {
+        if(this.board[x][y].type !== "EMPTY") {
+            return false;
+        }
+        for (let i = -sampling_rate; i <= sampling_rate; i++) {
+            for (let j = -sampling_rate; j <= sampling_rate; j++) {
+                        if ((x+i >= 0) && (x+i < size) && (y+j >= 0) && (y+j < size)) {
+                            if(this.board[x+i][y+j].type === "WALL" || this.board[x+i][y+j].type === "SAMPLE") {
+                                return false;
+                            }
+                        }
+            }
+        }
+        return true;
+    }
+
     sample() {
         let sampling = document.getElementById("sampling_rate");
         let sampling_rate = parseInt(sampling.value);
@@ -63,11 +79,22 @@ class Environment {
                 if (this.board[x][y].type === "SAMPLE") {
                     this.board[x][y].update("EMPTY");
                 }
-                if ((y % sampling_rate === 0 && x % sampling_rate === 0) && this.board[x][y].type === "EMPTY" && sampling_rate !== 1) {
-                    this.board[x][y].update("SAMPLE");
-                }
+
+
             }
         }
+        if(sampling_rate > 0) {
+            for (let x = 0; x < this.size; x++) {
+            for (let y = 0; y < this.size; y++) {
+                if(this.sample_point(x, y, sampling_rate, this.size)) {
+                    this.board[x][y].update("SAMPLE")
+                }
+
+
+            }
+        }
+        }
+
     }
 
     clean_selection() {

@@ -3,8 +3,6 @@ import json
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 
-from typing import Dict
-
 from option_dictionaries.tile_options import tiles, get_complementary_colour
 from option_dictionaries.algorithm_options import algorithms, get_capitalised_name
 

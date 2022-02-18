@@ -38,6 +38,7 @@ class DrawingTool {
     create_board() {
         let size = document.getElementById("size").value
         size = size && !isNaN(size) ? parseInt(size) : default_size;
+        this.history = []
         this.environment.create_board(size)
         this.update_canvas()
     }
