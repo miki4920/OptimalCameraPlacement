@@ -48,3 +48,11 @@ class Parent:
                     self.genotype[i] = None
                 else:
                     sample_set = sample_set.union(gene.camera_set)
+
+    def dominates(self, other):
+        equal = True
+        non_dominated = False
+        for first, second in zip((self.score, self.cameras), (other.score, other.cameras)):
+            equal = equal and first <= second
+            non_dominated = non_dominated or first < second
+        return equal and non_dominated

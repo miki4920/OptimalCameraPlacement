@@ -2,7 +2,7 @@ from algorithms.hill_climbing_algorithm import HillClimbingAlgorithm
 from algorithms.genetic_algorithm import GeneticAlgorithm
 from algorithms.random_sampling_algorithm import RandomSamplingAlgorithm
 from algorithms.estimation_of_distribution_algorithm import EstimationOfDistributionAlgorithm
-from algorithms.nsga2_algorithm import NsgaTwo
+from algorithms.genetic_algorithm import GeneticAlgorithm as NsgaTwo
 
 algorithms = {
     "hill_climbing_algorithm": HillClimbingAlgorithm,
