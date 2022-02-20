@@ -5,39 +5,114 @@
     <title>Title</title>
     <link rel="stylesheet" href="../static/environment.css">
 </head>
-<body   >
-    <aside>
-        <section id="controls">
-            <label for="width">Width</label>
-            <input id="width">
-            <label for="height">Height</label>
-            <input id="height">
-            <button class="clickable_button" onclick="environment.update_board()">Update</button>
-            <label for="sampling_rate"></label>
-            <input type="range" min="1" max="10" value="1" class="slider" id="sampling_rate" oninput="environment.sample()">
-            <button class="clickable_button" onclick="send_environment()">Place Cameras</button>
+<body>
+<aside>
+    <button class="collapsible">Information</button>
+    <div class="wrapper" id="information">
+        <section>
+            <output id="coverage">Total Coverage: 0 %</output>
+            <output id="coverage_per_camera">Average Coverage per Camera: 0 %</output>
+            <p>Hover over any tile to see its attributes</p>
+            <output id="coordinates"></output>
+            <output id="type"></output>
+            <output id="range"></output>
+            <output id="fov"></output>
+            <output id="orientation"></output>
+            <output id="nodes"></output>
         </section>
-    </aside>
-    <main id="camera_container">
-        <p id="position"></p>
-        <canvas id="camera_canvas" ></canvas>
-    </main>
-    <aside>
-        <section id="options">
-            {% for key in options %}
-                <section class="wrapper">
-                    <button class="option" onclick="environment.change_selected_type('{{key}}')"
-                            style="background-color:{{options[key]}}; color:{{complementary(options[key])}}">{{ key }}</button>
-                </section>
+    </div>
+    <button class="collapsible">Canvas</button>
+    <div class="wrapper">
+        <section>
+            <label for="size">Size</label>
+            <input id="size" autocomplete="off">
+            <button onclick="drawing_tool.create_board()" class="execute">Create New Canvas</button>
+        </section>
+    </div>
+    <button class="collapsible">Cameras</button>
+    <div class="wrapper" id="cameras_wrapper">
+        <section>
+            <label for="name">Camera Name</label>
+            <input id="name" autocomplete="off">
+            <label for="input_range">Range</label>
+            <input id="input_range" autocomplete="off">
+            <label for="input_fov">Field of View</label>
+            <input id="input_fov" autocomplete="off">
+            <button class="execute" onclick="drawing_tool.camera_handler.add_camera()">Add a New Camera</button>
+            <ul id="cameras">
+            </ul>
+        </section>
+    </div>
+    <button class="collapsible">Files</button>
+    <div class="wrapper">
+        <section>
+            <button class="execute" onclick="document.getElementById('environment_upload').click()">Upload Environment
+            </button>
+            <input id="environment_upload" type="file" class="file" accept=".txt"/>
+            <button class="execute" onclick="file_processor.download_environment()">Download Environment</button>
+        </section>
+    </div>
+    <button class="collapsible">Sampling & Solver</button>
+    <div class="wrapper">
+        <section>
+            <label for="sampling_rate">Sampling Rate: </label>
+            <input type="range" min="0" max="10" value="1" class="slider" id="sampling_rate"
+                   oninput="drawing_tool.sample()">
+            <label for="algorithm">Algorithm Selection: </label>
+            <select name="algorithm" id="algorithm">
+                {% for key in algorithm_options %}
+                    <option value="{{ key }}">{{ capitalise(key) }}</option>
+                {% endfor %}
+            </select>
+            <label for="objective" id="objective_label">Objective:</label>
+            <select name="objective" id="objective">
+                <option value="1">Optimise For Coverage</option>
+                <option value="3">Balance Coverage and Camera Count</option>
+                <option value="5">Optimise For Camera Count</option>
+            </select>
+            <button onclick="send_environment()" class="execute">Place Cameras</button>
+            <button onclick="drawing_tool.clean_board_of_cameras()" class="execute">Clear Cameras</button>
+        </section>
+    </div>
+</aside>
+<main id="camera_container">
+    <p id="position"></p>
+    <canvas id="camera_canvas" oncontextmenu="return false"></canvas>
+</main>
+<aside>
+    <button class="collapsible">Elements</button>
+    <div class="wrapper">
+        <section>
+            {% for key in tile_options %}
+                <button class="option" value='{{ key }}' id="{{ key }}"
+                        onclick="drawing_tool.change_selected_colour(this.id)"
+                        style="background-color:{{ tile_options[key] }}; color:{{ complementary(tile_options[key], 'rgb(255, 255, 255)') }}">{{ key }}</button>
             {% endfor %}
         </section>
-    </aside>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+    </div>
+    <button class="collapsible">Tools</button>
+    <div class="wrapper">
+        <section>
+            <button class="option active_drawing" id="POINT" onclick="drawing_tool.change_selected_drawing(this.id)">
+                POINT
+            </button>
+            <button class="option" id="LINE" onclick="drawing_tool.change_selected_drawing(this.id)">LINE</button>
+            <button class="option" id="FILL" onclick="drawing_tool.change_selected_drawing(this.id)">FILL</button>
+            <button class="option" id="UNDO" onclick="drawing_tool.undo()">UNDO</button>
+        </section>
+    </div>
+</aside>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
         integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
         crossorigin="anonymous"></script>
-    <script>
-        let Colours = {{ options | tojson | safe }};
-    </script>
-    <script src="/static/environment.js"></script>
+<script>
+    let Colours = {{ tile_options | tojson | safe }};
+</script>
+<script src="/static/collapsible.js"></script>
+<script src="/static/environment.js"></script>
+<script src="/static/file_handling.js"></script>
+<script src="/static/camera_handler.js"></script>
+<script src="/static/drawing.js"></script>
+<script src="/static/sockets.js"></script>
 </body>
 </html>
