@@ -176,7 +176,7 @@ class DrawingTool {
         }
         let board = this.history.pop();
         let environment = this.environment.parse_board().join("");
-        if(board.join("") == environment) {
+        if(board.join("") === environment) {
             board = this.history.pop();
         }
         for (let x = 0; x < this.environment.size; x++) {
@@ -193,8 +193,30 @@ class DrawingTool {
         document.getElementById("coverage_per_camera").innerHTML = "Average Coverage per Camera: " + 0 + " %"
         this.update_canvas();
     }
+}
 
-
+function update_information(node) {
+    document.getElementById("coordinates").innerText = "X: " + node.x + ", Y: " + node.y
+    document.getElementById("type").innerText = "Type: " + node.type
+    let range = document.getElementById("range")
+    let fov = document.getElementById("fov")
+    let orientation = document.getElementById("orientation")
+    let nodes = document.getElementById("nodes")
+    if (node.camera) {
+        range.innerText = "Camera Range: " + node.camera.range
+        fov.innerText = "Camera FoV: " + node.camera.fov
+        orientation.innerText = "Camera Orientation: " + node.camera.orientation
+        nodes.innerText = "Camera's Vision: " + node.camera.nodes
+    } else {
+        range.innerText = ""
+        fov.innerText = ""
+        orientation.innerText = ""
+        nodes.innerText = ""
+    }
+    let wrapper = document.getElementById("information")
+    if (wrapper.style.maxHeight) {
+        wrapper.style.maxHeight = wrapper.scrollHeight + "px";
+    }
 }
 
 let drawing_tool = new DrawingTool();
