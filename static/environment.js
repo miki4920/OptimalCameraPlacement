@@ -16,11 +16,22 @@ class Cell {
         this.camera = null;
     }
 
-    update(type, camera = null) {
+    update(type, camera = null, overlay=null) {
         this.type = type
-        if (camera) {
+        this.overlay = false;
+        if (camera && overlay === null) {
             this.camera = new Camera(camera);
-        } else {
+        }
+        else if(overlay !== null) {
+            if(overlay === "0") {
+                this.overlay = false;
+            }
+            else {
+                this.overlay = true;
+            }
+
+        }
+        else {
             this.camera = null;
         }
     }
