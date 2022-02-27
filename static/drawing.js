@@ -12,6 +12,7 @@ class DrawingTool {
         this.environment.create_board(default_size)
         this.camera_handler = new CameraHandler();
         this.history = [];
+        this.overlay = false;
     }
 
     sample() {
@@ -22,7 +23,7 @@ class DrawingTool {
     refresh_canvas() {
         this.environment.board.forEach((row) => {
             row.forEach((element) => {
-                this.draw_point_on_canvas(element.x, element.y, element.type)
+                this.draw_point_on_canvas(element.x, element.y, element.type, element.overlay)
             })
         })
     }
@@ -83,9 +84,14 @@ class DrawingTool {
         return result > 0 ? result : 0;
     }
 
-    draw_point_on_canvas(x, y, type) {
+    draw_point_on_canvas(x, y, type, overlay) {
         let context = this.canvas.getContext("2d");
         context.fillStyle = Colours[type];
+        context.fillRect(x * this.pixel_resolution[0], y * this.pixel_resolution[1],
+            this.pixel_resolution[0] - 1, this.pixel_resolution[1] - 1);
+        if(overlay) {
+            context.fillStyle = "rgba(0, 0, 0, 0.5)"
+        }
         context.fillRect(x * this.pixel_resolution[0], y * this.pixel_resolution[1],
             this.pixel_resolution[0] - 1, this.pixel_resolution[1] - 1);
     }
@@ -193,6 +199,73 @@ class DrawingTool {
         document.getElementById("coverage_per_camera").innerHTML = "Average Coverage per Camera: " + 0 + " %"
         this.update_canvas();
     }
+
+    check_range(x1, y1, x2, y2, range) {
+        return Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2) < Math.pow(range, 2)
+    }
+
+    calculate_angle(x1, y1, x2, y2) {
+        let angle = Math.atan2(y2-y1, x2-x1)
+        angle = (angle * 180) / Math.PI
+        if (angle < 0) {
+            angle = 360 + angle
+        }
+        return angle
+    }
+
+    modulus(a, b) {
+        return ((a%b)+b) % b
+    }
+
+    check_angle(x1, y1, x2, y2, orientation, fov) {
+        let angle = this.calculate_angle(x1, y1, x2, y2)
+        let angle_one = this.modulus(orientation - fov, 360)
+        let angle_two = this.modulus(orientation + fov, 360)
+        let angle_between_difference = this.modulus(angle_two - angle_one, 360)
+        let angle_difference = this.modulus(angle - angle_one, 360)
+        if (angle_difference <= angle_between_difference && angle_between_difference < 180) {
+            return true;
+        }
+        else if(180 < angle_between_difference && angle_between_difference <= angle_difference) {
+            return true;
+        }
+        return false;
+    }
+
+    visible(node, x, y) {
+        let camera = node.camera;
+        if(node.x === x && node.y === y) {
+            return true;
+        }
+        if (!this.check_range(node.x, node.y, x, y, camera.range)) {
+            return false;
+        }
+        if (!this.check_angle(node.x, node.y, x, y, camera.orientation, camera.fov/2)) {
+            return false;
+        }
+        return true;
+    }
+
+    clear_overlay() {
+        for (let x = 0; x < this.environment.size; x++) {
+            for (let y = 0; y < this.environment.size; y++) {
+                this.environment.board[x][y].update(this.environment.board[x][y].type, this.environment.board[x][y].camera, "0")
+            }
+        }
+        this.overlay = false;
+        this.update_canvas();
+    }
+
+    draw_camera_overlay(node) {
+        for (let x = 0; x < this.environment.size; x++) {
+            for (let y = 0; y < this.environment.size; y++) {
+                if(this.visible(node, x, y)) {
+                    this.environment.board[x][y].update(this.environment.board[x][y].type, this.environment.board[x][y].camera, "1")
+                }
+            }
+        }
+        this.update_canvas();
+    }
 }
 
 function update_information(node) {
@@ -202,7 +275,12 @@ function update_information(node) {
     let fov = document.getElementById("fov")
     let orientation = document.getElementById("orientation")
     let nodes = document.getElementById("nodes")
+    if(drawing_tool.overlay) {
+        drawing_tool.clear_overlay();
+    }
     if (node.camera) {
+        drawing_tool.draw_camera_overlay(node)
+        drawing_tool.overlay = true;
         range.innerText = "Camera Range: " + node.camera.range
         fov.innerText = "Camera FoV: " + node.camera.fov
         orientation.innerText = "Camera Orientation: " + node.camera.orientation
