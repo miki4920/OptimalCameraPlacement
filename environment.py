@@ -54,10 +54,10 @@ class Evaluator:
         valid_orientations = []
         angle = self.calculate_angle(start, end)
         for orientation in orientations:
-            angle_one = (orientation-fov) % 360
-            angle_two = (orientation+fov) % 360
-            angle_between_difference = (angle_two-angle_one) % 360
-            angle_difference = (angle-angle_one) % 360
+            angle_one = (orientation - fov) % 360
+            angle_two = (orientation + fov) % 360
+            angle_between_difference = (angle_two - angle_one) % 360
+            angle_difference = (angle - angle_one) % 360
             if angle_difference <= angle_between_difference < 180:
                 valid_orientations.append(orientation)
             elif 180 < angle_between_difference <= angle_difference:
