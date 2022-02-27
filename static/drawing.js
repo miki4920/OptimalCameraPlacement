@@ -89,7 +89,7 @@ class DrawingTool {
         context.fillStyle = Colours[type];
         context.fillRect(x * this.pixel_resolution[0], y * this.pixel_resolution[1],
             this.pixel_resolution[0] - 1, this.pixel_resolution[1] - 1);
-        if(overlay) {
+        if (overlay) {
             context.fillStyle = "rgba(0, 0, 0, 0.5)"
         }
         context.fillRect(x * this.pixel_resolution[0], y * this.pixel_resolution[1],
@@ -146,7 +146,7 @@ class DrawingTool {
 
     draw_fill(x, y, replacement_type) {
         let initial_type = this.environment.board[x][y].type
-        if(initial_type === replacement_type) {
+        if (initial_type === replacement_type) {
             return;
         }
         this.fill(x, y, initial_type, replacement_type)
@@ -158,7 +158,7 @@ class DrawingTool {
         update_information(this.environment.board[x][y]);
         if (this.drawing) {
             let board = this.environment.parse_board()
-            if(this.history.length === 0 || board.join("") !== this.history[this.history.length-1].join("")) {
+            if (this.history.length === 0 || board.join("") !== this.history[this.history.length - 1].join("")) {
                 this.history.push(board)
             }
 
@@ -177,17 +177,17 @@ class DrawingTool {
     }
 
     undo() {
-        if(this.history.length === 0) {
+        if (this.history.length === 0) {
             return;
         }
         let board = this.history.pop();
         let environment = this.environment.parse_board().join("");
-        if(board.join("") === environment) {
+        if (board.join("") === environment) {
             board = this.history.pop();
         }
         for (let x = 0; x < this.environment.size; x++) {
             for (let y = 0; y < this.environment.size; y++) {
-                this.environment.board[x][y].update(board[x*this.environment.size+y])
+                this.environment.board[x][y].update(board[x * this.environment.size + y])
             }
         }
         this.update_canvas()
@@ -201,11 +201,11 @@ class DrawingTool {
     }
 
     check_range(x1, y1, x2, y2, range) {
-        return Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2) <= Math.pow(range, 2)
+        return Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2) <= Math.pow(range, 2)
     }
 
     calculate_angle(x1, y1, x2, y2) {
-        let angle = Math.atan2(y2-y1, x2-x1)
+        let angle = Math.atan2(y2 - y1, x2 - x1)
         angle = (angle * 180) / Math.PI
         if (angle < 0) {
             angle = 360 + angle
@@ -214,7 +214,7 @@ class DrawingTool {
     }
 
     modulus(a, b) {
-        return ((a%b)+b) % b
+        return ((a % b) + b) % b
     }
 
     check_angle(x1, y1, x2, y2, orientation, fov) {
@@ -225,23 +225,50 @@ class DrawingTool {
         let angle_difference = this.modulus(angle - angle_one, 360)
         if (angle_difference <= angle_between_difference && angle_between_difference < 180) {
             return true;
-        }
-        else if(180 < angle_between_difference && angle_between_difference <= angle_difference) {
+        } else if (180 < angle_between_difference && angle_between_difference <= angle_difference) {
             return true;
         }
         return false;
     }
 
+    check_wall(x1, y1, x2, y2) {
+        let dx = Math.abs(x2 - x1);
+        let dy = Math.abs(y2 - y1);
+        let sx = (x1 < x2) ? 1 : -1;
+        let sy = (y1 < y2) ? 1 : -1;
+        let err = dx - dy;
+
+        while (true) {
+            if(this.environment.board[x1][y1].type === "WALL") {
+                return false;
+            }
+            if ((x1 === x2) && (y1 === y2)) break;
+            let e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x1 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y1 += sy;
+            }
+        }
+        return true;
+    }
+
     visible(node, x, y) {
         let camera = node.camera;
-        if(node.x === x && node.y === y) {
+        if (node.x === x && node.y === y) {
             return true;
         }
         if (!this.check_range(node.x, node.y, x, y, camera.range)) {
             return false;
         }
 
-        if (camera.fov < 360 && !this.check_angle(node.x, node.y, x, y, camera.orientation, camera.fov/2)) {
+        if (camera.fov < 360 && !this.check_angle(node.x, node.y, x, y, camera.orientation, camera.fov / 2)) {
+            return false;
+        }
+        if (!this.check_wall(node.x, node.y, x, y)) {
             return false;
         }
         return true;
@@ -260,7 +287,7 @@ class DrawingTool {
     draw_camera_overlay(node) {
         for (let x = 0; x < this.environment.size; x++) {
             for (let y = 0; y < this.environment.size; y++) {
-                if(this.visible(node, x, y)) {
+                if (this.visible(node, x, y)) {
                     this.environment.board[x][y].update(this.environment.board[x][y].type, this.environment.board[x][y].camera, "1")
                 }
             }
@@ -276,7 +303,7 @@ function update_information(node) {
     let fov = document.getElementById("fov")
     let orientation = document.getElementById("orientation")
     let nodes = document.getElementById("nodes")
-    if(drawing_tool.overlay) {
+    if (drawing_tool.overlay) {
         drawing_tool.clear_overlay();
     }
     if (node.camera) {
@@ -303,10 +330,10 @@ let drawing_tool = new DrawingTool();
 drawing_tool.canvas.addEventListener("mousedown", (e) => {
     drawing_tool.start_drawing(e)
 })
-drawing_tool.canvas.addEventListener("mouseup", () =>{
+drawing_tool.canvas.addEventListener("mouseup", () => {
     drawing_tool.stop_drawing()
 })
-drawing_tool.canvas.addEventListener("mousemove",(e) => {
+drawing_tool.canvas.addEventListener("mousemove", (e) => {
     drawing_tool.draw(e)
 })
 window.onload = window.onresize = () => {
