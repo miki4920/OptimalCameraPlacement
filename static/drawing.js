@@ -201,7 +201,7 @@ class DrawingTool {
     }
 
     check_range(x1, y1, x2, y2, range) {
-        return Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2) < Math.pow(range, 2)
+        return Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2) <= Math.pow(range, 2)
     }
 
     calculate_angle(x1, y1, x2, y2) {
@@ -240,7 +240,8 @@ class DrawingTool {
         if (!this.check_range(node.x, node.y, x, y, camera.range)) {
             return false;
         }
-        if (!this.check_angle(node.x, node.y, x, y, camera.orientation, camera.fov/2)) {
+
+        if (camera.fov < 360 && !this.check_angle(node.x, node.y, x, y, camera.orientation, camera.fov/2)) {
             return false;
         }
         return true;

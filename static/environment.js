@@ -16,22 +16,19 @@ class Cell {
         this.camera = null;
     }
 
-    update(type, camera = null, overlay=null) {
+    update(type, camera = null, overlay = null) {
         this.type = type
         this.overlay = false;
         if (camera && overlay === null) {
             this.camera = new Camera(camera);
-        }
-        else if(overlay !== null) {
-            if(overlay === "0") {
+        } else if (overlay !== null) {
+            if (overlay === "0") {
                 this.overlay = false;
-            }
-            else {
+            } else {
                 this.overlay = true;
             }
 
-        }
-        else {
+        } else {
             this.camera = null;
         }
     }
@@ -67,16 +64,16 @@ class Environment {
     }
 
     sample_point(x, y, sampling_rate, size) {
-        if(this.board[x][y].type !== "EMPTY") {
+        if (this.board[x][y].type !== "EMPTY") {
             return false;
         }
         for (let i = -sampling_rate; i <= sampling_rate; i++) {
             for (let j = -sampling_rate; j <= sampling_rate; j++) {
-                        if ((x+i >= 0) && (x+i < size) && (y+j >= 0) && (y+j < size)) {
-                            if(this.board[x+i][y+j].type === "WALL" || this.board[x+i][y+j].type === "SAMPLE") {
-                                return false;
-                            }
-                        }
+                if ((x + i >= 0) && (x + i < size) && (y + j >= 0) && (y + j < size)) {
+                    if (this.board[x + i][y + j].type === "WALL" || this.board[x + i][y + j].type === "SAMPLE") {
+                        return false;
+                    }
+                }
             }
         }
         return true;
@@ -94,16 +91,16 @@ class Environment {
 
             }
         }
-        if(sampling_rate > 0) {
+        if (sampling_rate > 0) {
             for (let x = 0; x < this.size; x++) {
-            for (let y = 0; y < this.size; y++) {
-                if(this.sample_point(x, y, sampling_rate, this.size)) {
-                    this.board[x][y].update("SAMPLE")
+                for (let y = 0; y < this.size; y++) {
+                    if (this.sample_point(x, y, sampling_rate, this.size)) {
+                        this.board[x][y].update("SAMPLE")
+                    }
+
+
                 }
-
-
             }
-        }
         }
 
     }
