@@ -5,8 +5,9 @@ tiles = {
     "EMPTY": "rgb(197,198,199)",
     "WALL": "rgb(31,40,51)",
     "CAMERA": "rgb(100,112,125)",
-    "SAMPLE": "rgb(220,0,0)",
-    "SELECTED": "rgb(128,169,181)"
+    "SAMPLE": "rgb(69,162,158)",
+    "SELECTED": "rgb(128,169,181)",
+    "UNSEEN": "rgb(220,0,0)"
 }
 
 
