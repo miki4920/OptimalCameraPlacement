@@ -84,7 +84,7 @@ class Environment {
         let sampling_rate = parseInt(sampling.value);
         for (let x = 0; x < this.size; x++) {
             for (let y = 0; y < this.size; y++) {
-                if (this.board[x][y].type === "SAMPLE") {
+                if (this.board[x][y].type === "SAMPLE" || this.board[x][y].type === "UNSEEN") {
                     this.board[x][y].update("EMPTY");
                 }
 
@@ -110,6 +110,9 @@ class Environment {
             for (let y = 0; y < this.size; y++) {
                 if (this.board[x][y].type === "SELECTED") {
                     this.board[x][y].update("CAMERA");
+                }
+                if (this.board[x][y].type === "UNSEEN") {
+                        this.board[x][y].update("SAMPLE")
                 }
             }
         }
