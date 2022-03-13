@@ -17,6 +17,14 @@ class CameraNode(Node):
     def __lt__(self, other):
         return len(self) < len(other)
 
+    def __add__(self, other):
+        if type(other) == type(self):
+            len(self) + len(other)
+        return len(self) + other
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
     def json(self):
         return {"x": self.coordinates_tuple[0],
                 "y": self.coordinates_tuple[1],
