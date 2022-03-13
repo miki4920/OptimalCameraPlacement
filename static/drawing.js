@@ -153,8 +153,11 @@ class DrawingTool {
     }
 
     draw(e) {
-        let x = this.normalise(e["layerX"], 0);
-        let y = this.normalise(e["layerY"], 1);
+        let rect = e.target.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+        x = this.normalise(x, 0);
+        y = this.normalise(y, 1);
         update_information(this.environment.board[x][y]);
         if (this.drawing) {
             let board = this.environment.parse_board()
@@ -326,6 +329,7 @@ function update_information(node) {
 }
 
 let drawing_tool = new DrawingTool();
+
 
 drawing_tool.canvas.addEventListener("mousedown", (e) => {
     drawing_tool.start_drawing(e)
